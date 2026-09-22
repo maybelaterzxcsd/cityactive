@@ -1,0 +1,100 @@
+.home-screen {
+  padding: var(--space-xl) var(--space-lg);
+  max-width: 900px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.home-header {
+  margin-bottom: var(--space-2xl);
+}
+
+.home-header h1 {
+  margin: 0 0 var(--space-sm) 0;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-black);
+  letter-spacing: -1.5px;
+  background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent) 50%, var(--color-category-volunteering) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-subtitle {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+}
+
+.filters {
+  display: flex;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  padding-bottom: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  padding: 10px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-card);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.chip:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border-light);
+  transform: translateY(-1px);
+}
+
+.chip--active {
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+}
+
+.events-list {
+  padding-bottom: var(--space-2xl);
+}
+
+/* Иконки в чипсах */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.event-card-wrapper {
+  transition: all 0.5s ease;
+}
+
+.event-card-wrapper.recommended {
+  animation: highlight 2s ease-in-out;
+}
+
+@keyframes highlight {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 3px var(--color-accent), 0 8px 32px rgba(139, 92, 246, 0.4);
+  }
+}
