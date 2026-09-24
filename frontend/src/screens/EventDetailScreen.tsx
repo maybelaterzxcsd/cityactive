@@ -11,9 +11,9 @@ import { ChatModal } from '../components/ChatModal';
 import './EventDetailScreen.css';
 
 const categoryGradients: Record<string, string> = {
-  anime: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  boardgames: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-  volunteering: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+  anime: 'linear-gradient(135deg, #db2777 0%, #be185d 100%)',
+  boardgames: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
+  volunteering: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
 };
 
 const categoryIcons: Record<string, string> = {
@@ -107,7 +107,7 @@ export const EventDetailScreen: React.FC = () => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="detail-hero" style={{ transform: `translateY(${scrollY * 0.5}px)` }}>
+      <div className="detail-hero">
         <div 
           className="detail-hero__fallback"
           style={{ background: categoryGradients[event.category] }}

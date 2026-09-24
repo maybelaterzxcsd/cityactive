@@ -72,7 +72,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
       
       <div className="event-card__content">
         <div className="event-card__header">
-          <span className="category-tag">{event.category}</span>
+          <span className="category-tag">{event.categoryRu}</span>
           <span className="age-tag">{event.ageRestriction}+</span>
         </div>
         
