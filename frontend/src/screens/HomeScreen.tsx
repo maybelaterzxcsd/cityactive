@@ -1,54 +1,173 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Flame, Calendar, Gift, MapPin } from 'lucide-react';
-import { mockEvents } from '../mocks';
-import { EventCard } from '../components/EventCard';
-import { AIAssistant } from '../components/AIAssistant';
-import './HomeScreen.css';
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { Flame, Calendar, Gift, MapPin, User } from "lucide-react";
+import { EventCard } from "../components/EventCard";
+import { AIAssistant } from "../components/AIAssistant";
+import "./HomeScreen.css";
+
+const API_URL = "http://127.0.0.1:8000/api";
+
+type FilterType = "all" | "today" | "tomorrow" | "free" | "nearby";
+
+interface CityEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  price: number;
+  maxParticipants: number;
+  participantsCount: number;
+  organizer: string;
+  category: string;
+  categoryRu: string;
+  ageRestriction: number;
+  needsVolunteers: boolean;
+  distance: string;
+  image: string | null;
+}
 
 export const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
+  const [events, setEvents] = useState<CityEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [recommendedId, setRecommendedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/events`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data: CityEvent[]) => {
+        setEvents(data);
+        setError(null);
+      })
+      .catch((err) => {
+        console.error("Error fetching events:", err);
+        setError(
+          "Не удалось загрузить события. Проверьте подключение к серверу.",
+        );
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Фильтрация событий
+  const filteredEvents = useMemo(() => {
+    if (activeFilter === "all") return events;
+
+    return events.filter((event) => {
+      switch (activeFilter) {
+        case "today":
+          return event.date.toLowerCase().includes("сегодня");
+        case "tomorrow":
+          return event.date.toLowerCase().includes("завтра");
+        case "free":
+          return event.price === 0;
+        case "nearby":
+          // Парсим расстояние из строки "1.2 км"
+          const distance = parseFloat(event.distance.replace(" км", ""));
+          return distance <= 3; // Рядом = до 3 км
+        default:
+          return true;
+      }
+    });
+  }, [events, activeFilter]);
+
+  if (loading) {
+    return (
+      <div className="home-screen">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Загрузка событий...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="home-screen">
+        <div className="error-container">
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>
+            Попробовать снова
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="home-screen">
       <header className="home-header">
-        <h1>ГородАктив</h1>
-        <p className="home-subtitle">Найди свой движ сегодня</p>
+        <div className="header-left">
+          <h1>ГородАктив</h1>
+          <p className="home-subtitle">Найди свой движ сегодня</p>
+        </div>
+        <button
+          className="my-events-btn"
+          onClick={() => navigate("/my-events")}
+        >
+          <User size={16} /> Мои события
+        </button>
       </header>
 
       <div className="filters">
-        <button className="chip chip--active">
-          <Flame size={16} /> Сегодня
+        <button
+          className={`chip ${activeFilter === "all" ? "chip--active" : ""}`}
+          onClick={() => setActiveFilter("all")}
+        >
+          <Flame size={16} /> Все
         </button>
-        <button className="chip">
+        <button
+          className={`chip ${activeFilter === "today" ? "chip--active" : ""}`}
+          onClick={() => setActiveFilter("today")}
+        >
+          <Calendar size={16} /> Сегодня
+        </button>
+        <button
+          className={`chip ${activeFilter === "tomorrow" ? "chip--active" : ""}`}
+          onClick={() => setActiveFilter("tomorrow")}
+        >
           <Calendar size={16} /> Завтра
         </button>
-        <button className="chip">
+        <button
+          className={`chip ${activeFilter === "free" ? "chip--active" : ""}`}
+          onClick={() => setActiveFilter("free")}
+        >
           <Gift size={16} /> Бесплатно
         </button>
-        <button className="chip">
+        <button
+          className={`chip ${activeFilter === "nearby" ? "chip--active" : ""}`}
+          onClick={() => setActiveFilter("nearby")}
+        >
           <MapPin size={16} /> Рядом
         </button>
       </div>
 
-      <AIAssistant 
-        onRecommend={setRecommendedId}
-        events={mockEvents}
-      />
+      <AIAssistant onRecommend={setRecommendedId} events={filteredEvents} />
 
       <div className="events-list">
-        {mockEvents.map(event => (
-          <div 
-            key={event.id}
-            className={`event-card-wrapper ${recommendedId === event.id ? 'recommended' : ''}`}
-          >
-            <EventCard
-              event={event}
-              onClick={() => navigate(`/event/${event.id}`)}
-            />
+        {filteredEvents.length === 0 ? (
+          <div className="empty-state">
+            <p>Ничего не найдено. Попробуйте другой фильтр.</p>
           </div>
-        ))}
+        ) : (
+          filteredEvents.map((event) => (
+            <div
+              key={event.id}
+              className={`event-card-wrapper ${recommendedId === event.id ? "recommended" : ""}`}
+            >
+              <EventCard
+                event={event}
+                onClick={() => navigate(`/event/${event.id}`)}
+              />
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

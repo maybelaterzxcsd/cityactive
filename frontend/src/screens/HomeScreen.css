@@ -5,10 +5,18 @@
   min-height: 100vh;
 }
 
+/* Хедер — ОДИН блок, без дублирования */
 .home-header {
-  margin-bottom: var(--space-lg); /* 24px вместо 72px */
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
   border-bottom: 0.5px solid var(--color-border);
+}
+
+.header-left {
+  flex: 1;
 }
 
 .home-header h1 {
@@ -26,12 +34,37 @@
   font-weight: var(--font-weight-regular);
 }
 
+/* Кнопка "Мои события" — на CSS-переменных */
+.my-events-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-chip);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.my-events-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border-light);
+  transform: translateY(-1px);
+}
+
+/* Фильтры */
 .filters {
   display: flex;
   gap: var(--space-sm);
   overflow-x: auto;
-  padding: var(--space-sm) 0; /* добавили padding сверху и снизу */
-  margin-bottom: var(--space-lg); /* 24px вместо 48px */
+  padding: var(--space-sm) 0;
+  margin-bottom: var(--space-lg);
   scrollbar-width: none;
 }
 
@@ -53,6 +86,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+  font-family: var(--font-family);
 }
 
 .chip:hover {
@@ -67,6 +101,7 @@
   box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
 }
 
+/* Список событий */
 .events-list {
   padding-bottom: var(--space-2xl);
 }
@@ -88,4 +123,58 @@
     transform: scale(1.02);
     box-shadow: 0 0 0 2px var(--color-accent), 0 8px 32px rgba(99, 102, 241, 0.3);
   }
+}
+
+/* Лоадер */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: var(--color-text-secondary);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--space-md);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Ошибка */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: var(--color-text-secondary);
+  gap: var(--space-md);
+}
+
+.error-container button {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-2xl) var(--space-lg);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
 }
