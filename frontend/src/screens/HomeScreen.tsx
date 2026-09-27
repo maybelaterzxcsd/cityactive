@@ -33,7 +33,7 @@ export const HomeScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-  const [recommendedId, setRecommendedId] = useState<string | null>(null);
+  const [recommendedIds, setRecommendedIds] = useState<string[]>([]);
 
   useEffect(() => {
     fetch(`${API_URL}/events`)
@@ -48,33 +48,45 @@ export const HomeScreen: React.FC = () => {
       .catch((err) => {
         console.error("Error fetching events:", err);
         setError(
-          "Не удалось загрузить события. Проверьте подключение к серверу.",
+          "Не удалось загрузить события. Проверьте подключение к серверу."
         );
       })
       .finally(() => setLoading(false));
   }, []);
 
-  // Фильтрация событий
   const filteredEvents = useMemo(() => {
-    if (activeFilter === "all") return events;
+    let result: CityEvent[] = [];
 
-    return events.filter((event) => {
-      switch (activeFilter) {
-        case "today":
-          return event.date.toLowerCase().includes("сегодня");
-        case "tomorrow":
-          return event.date.toLowerCase().includes("завтра");
-        case "free":
-          return event.price === 0;
-        case "nearby":
-          // Парсим расстояние из строки "1.2 км"
-          const distance = parseFloat(event.distance.replace(" км", ""));
-          return distance <= 3; // Рядом = до 3 км
-        default:
-          return true;
-      }
-    });
-  }, [events, activeFilter]);
+    if (activeFilter === "all") {
+      result = events;
+    } else {
+      result = events.filter((event) => {
+        switch (activeFilter) {
+          case "today":
+            return event.date.toLowerCase().includes("сегодня");
+          case "tomorrow":
+            return event.date.toLowerCase().includes("завтра");
+          case "free":
+            return event.price === 0;
+          case "nearby":
+            const distance = parseFloat(event.distance.replace(" км", ""));
+            return distance <= 3;
+          default:
+            return true;
+        }
+      });
+    }
+
+    if (recommendedIds.length > 0) {
+      result = [...result].sort((a, b) => {
+        const aRecommended = recommendedIds.includes(a.id) ? 0 : 1;
+        const bRecommended = recommendedIds.includes(b.id) ? 0 : 1;
+        return aRecommended - bRecommended;
+      });
+    }
+
+    return result;
+  }, [events, activeFilter, recommendedIds]);
 
   if (loading) {
     return (
@@ -109,9 +121,9 @@ export const HomeScreen: React.FC = () => {
         </div>
         <button
           className="my-events-btn"
-          onClick={() => navigate("/my-events")}
+          onClick={() => navigate("/profile")}
         >
-          <User size={16} /> Мои события
+          <User size={18} /> Профиль
         </button>
       </header>
 
@@ -148,7 +160,7 @@ export const HomeScreen: React.FC = () => {
         </button>
       </div>
 
-      <AIAssistant onRecommend={setRecommendedId} events={filteredEvents} />
+      <AIAssistant onRecommend={setRecommendedIds} events={filteredEvents} />
 
       <div className="events-list">
         {filteredEvents.length === 0 ? (
@@ -159,10 +171,13 @@ export const HomeScreen: React.FC = () => {
           filteredEvents.map((event) => (
             <div
               key={event.id}
-              className={`event-card-wrapper ${recommendedId === event.id ? "recommended" : ""}`}
+              className={`event-card-wrapper ${
+                recommendedIds.includes(event.id) ? "recommended-badge" : ""
+              }`}
             >
               <EventCard
                 event={event}
+                recommended={recommendedIds.includes(event.id)}
                 onClick={() => navigate(`/event/${event.id}`)}
               />
             </div>

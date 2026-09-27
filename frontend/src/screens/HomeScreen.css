@@ -1,70 +1,56 @@
 .home-screen {
-  padding: var(--space-xl) var(--space-lg);
-  max-width: 900px;
+  padding: 20px;
+  max-width: 800px;
   margin: 0 auto;
-  min-height: 100vh;
 }
 
-/* Хедер — ОДИН блок, без дублирования */
 .home-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: var(--space-lg);
-  padding-bottom: var(--space-md);
-  border-bottom: 0.5px solid var(--color-border);
+  margin-bottom: 24px;
 }
 
-.header-left {
-  flex: 1;
-}
-
-.home-header h1 {
-  margin: 0 0 var(--space-xs) 0;
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-black);
-  letter-spacing: -1.5px;
-  color: var(--color-text-primary);
+.header-left h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .home-subtitle {
+  color: #a0a0b0;
   margin: 0;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-regular);
+  font-size: 14px;
 }
 
-/* Кнопка "Мои события" — на CSS-переменных */
 .my-events-btn {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-bg-chip);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-text-primary);
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  font-family: var(--font-family);
-  transition: all var(--transition-fast);
-  white-space: nowrap;
+  transition: background 0.2s;
 }
 
 .my-events-btn:hover {
-  background: var(--color-bg-hover);
-  border-color: var(--color-border-light);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-/* Фильтры */
 .filters {
   display: flex;
-  gap: var(--space-sm);
+  gap: 8px;
   overflow-x: auto;
-  padding: var(--space-sm) 0;
-  margin-bottom: var(--space-lg);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
   scrollbar-width: none;
 }
 
@@ -73,108 +59,64 @@
 }
 
 .chip {
-  padding: 10px 20px;
-  border: 0.5px solid var(--color-border);
-  border-radius: var(--radius-full);
-  background: var(--color-bg-card);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
-  font-family: var(--font-family);
-}
-
-.chip:hover {
-  background: var(--color-bg-hover);
-  border-color: var(--color-border-light);
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #c0c0d0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
 }
 
 .chip--active {
-  background: var(--color-accent);
+  background: var(--color-accent, #6366f1);
   color: white;
-  border-color: var(--color-accent);
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+  border-color: var(--color-accent, #6366f1);
 }
 
-/* Список событий */
+/* СПИСОК СОБЫТИЙ */
 .events-list {
-  padding-bottom: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
+/* ОБЁРТКА */
 .event-card-wrapper {
-  transition: all 0.5s ease;
+  position: relative;
 }
 
-.event-card-wrapper.recommended {
-  animation: highlight 2s ease-in-out;
+/* БЕЙДЖИК НА ОБЁРТКЕ */
+.event-card-wrapper.recommended-badge::after {
+  content: "✨ Выбор ИИ";
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+  z-index: 30;
+  animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
 }
 
-@keyframes highlight {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: none;
-  }
-  50% {
-    transform: scale(1.02);
-    box-shadow: 0 0 0 2px var(--color-accent), 0 8px 32px rgba(99, 102, 241, 0.3);
-  }
-}
-
-/* Лоадер */
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  color: var(--color-text-secondary);
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--color-border);
-  border-top-color: var(--color-accent);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: var(--space-md);
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Ошибка */
-.error-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  color: var(--color-text-secondary);
-  gap: var(--space-md);
-}
-
-.error-container button {
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-accent);
-  color: var(--color-text-inverse);
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+@keyframes bounce-in {
+  0% { transform: scale(0) translateY(10px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 .empty-state {
   text-align: center;
-  padding: var(--space-2xl) var(--space-lg);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-lg);
+  padding: 40px 20px;
+  color: #a0a0b0;
 }

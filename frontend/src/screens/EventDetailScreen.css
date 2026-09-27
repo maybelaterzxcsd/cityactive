@@ -23,6 +23,7 @@
   height: 200px;
   overflow: hidden;
   will-change: transform;
+  padding-top: -40px;
 }
 
 .detail-hero__fallback {
@@ -51,39 +52,6 @@
   pointer-events: none;
 }
 
-/* КНОПКА НАЗАД */
-.back-button {
-  position: absolute;
-  top: var(--space-lg);
-  left: var(--space-lg);
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px 20px;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: white;
-  transition: all var(--transition-normal);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  z-index: 10;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-family);
-}
-
-.back-button:hover {
-  background: rgba(0, 0, 0, 0.9);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-}
-
-.back-button:active {
-  transform: translateY(0);
-}
 
 /* КОНТЕНТ */
 .detail-content {
@@ -455,4 +423,35 @@
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+}
+
+.back-button-inline {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(22, 22, 24, 0.85); /* цвет карточки с прозрачностью */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* более заметная рамка */
+  border-radius: var(--radius-full);
+  color: white;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+  transition: all var(--transition-normal);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
+.back-button-inline:hover {
+  background: rgba(22, 22, 24, 0.95);
+  border-color: var(--color-accent-light);
+  color: var(--color-accent-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }

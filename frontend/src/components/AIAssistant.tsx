@@ -1,17 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Send, X, Bot } from 'lucide-react';
+import { Sparkles, Send, X, Bot, Loader2 } from 'lucide-react';
 import './AIAssistant.css';
 
 interface AIAssistantProps {
-  onRecommend: (eventId: string | null) => void;
+  onRecommend: (eventIds: string[]) => void;
   events: Array<{
     id: string;
     title: string;
     category: string;
+    categoryRu: string;
     price: number;
     description: string;
     location: string;
+    distance: string;
+    maxParticipants: number;
+    needsVolunteers: boolean;
   }>;
 }
 
@@ -26,123 +30,78 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ onRecommend, events })
   const [query, setQuery] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [response, setResponse] = useState('');
-  const [recommendedId, setRecommendedId] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const analyzeQuery = (text: string): { eventId: string | null; message: string } => {
-    const lower = text.toLowerCase();
-
-    // Бесплатно
-    if (lower.includes('бесплатн') || lower.includes('0 руб') || lower.includes('без денег')) {
-      const freeEvent = events.find(e => e.price === 0);
-      if (freeEvent) {
-        return {
-          eventId: freeEvent.id,
-          message: `💡 Рекомендую "${freeEvent.title}" — это бесплатно и проходит в ${freeEvent.location}!`
-        };
-      }
+  // Умный парсинг: ищет ID по названию или по служебной строке
+  const extractRecommendedIds = (answer: string): string[] => {
+    // Способ 1: ищем явную строку РЕКОМЕНДУЮ_ID: 1, 3, 5
+    const explicitMatch = answer.match(/РЕКОМЕНДУЮ_ID:\s*([\d,\s]+)/i);
+    if (explicitMatch) {
+      return explicitMatch[1].split(',').map((id: string) => id.trim()).filter((id: string) => id);
     }
 
-    // С друзьями
-    if (lower.includes('друз') || lower.includes('компан') || lower.includes('вместе')) {
-      const socialEvent = events.find(e => e.maxParticipants >= 10);
-      if (socialEvent) {
-        return {
-          eventId: socialEvent.id,
-          message: `👥 Отлично для компании! Попробуй "${socialEvent.title}" — там будет весело!`
-        };
+    // Способ 2 (fallback): ищем ID по совпадению названий событий в ответе
+    const foundIds: string[] = [];
+    events.forEach((event) => {
+      // Берём короткое название (до двоеточия или первое слово)
+      const shortTitle = event.title.split(':')[0].trim().toLowerCase();
+      const fullTitle = event.title.toLowerCase();
+      
+      // Если название события встречается в ответе ИИ
+      if (answer.toLowerCase().includes(shortTitle) || answer.toLowerCase().includes(fullTitle)) {
+        foundIds.push(event.id);
       }
-    }
+    });
 
-    // Рядом
-    if (lower.includes('рядом') || lower.includes('близк') || lower.includes('недалек')) {
-      const nearEvent = events.find(e => e.location.toLowerCase().includes('парк') || e.distance.includes('500'));
-      if (nearEvent) {
-        return {
-          eventId: nearEvent.id,
-          message: `📍 Рядом с тобой есть "${nearEvent.title}" в ${nearEvent.location}!`
-        };
-      }
-    }
-
-    // Волонтёрство
-    if (lower.includes('волонт') || lower.includes('помоч') || lower.includes('помог')) {
-      const volunteerEvent = events.find(e => e.category === 'volunteering');
-      if (volunteerEvent) {
-        return {
-          eventId: volunteerEvent.id,
-          message: `🤝 Круто, что хочешь помочь! Посмотри "${volunteerEvent.title}" — там всегда нужны волонтёры!`
-        };
-      }
-    }
-
-    // Аниме
-    if (lower.includes('аним') || lower.includes('манг') || lower.includes('косплей')) {
-      const animeEvent = events.find(e => e.category === 'anime');
-      if (animeEvent) {
-        return {
-          eventId: animeEvent.id,
-          message: `✨ Для тебя идеально подойдёт "${animeEvent.title}"! Будет косплей-зона и викторина.`
-        };
-      }
-    }
-
-    // Настольные игры
-    if (lower.includes('игр') || lower.includes('настол') || lower.includes(' Catan')) {
-      const gameEvent = events.find(e => e.category === 'boardgames');
-      if (gameEvent) {
-        return {
-          eventId: gameEvent.id,
-          message: `🎮 Рекомендую "${gameEvent.title}" — играем в Catan и Мафию!`
-        };
-      }
-    }
-
-    // По умолчанию
-    const randomEvent = events[Math.floor(Math.random() * events.length)];
-    return {
-      eventId: randomEvent.id,
-      message: `🔥 Посмотри "${randomEvent.title}" — может быть, это то, что ты ищешь!`
-    };
+    return foundIds.slice(0, 3); // Максимум 3
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!query.trim()) return;
 
     setIsTyping(true);
-    setRecommendedId(null);
-    onRecommend(null);
+    setResponse('');
+    onRecommend([]);
 
-    // Имитация "думания" ИИ
-    setTimeout(() => {
-      const result = analyzeQuery(query);
-      
-      // Эффект печатания
-      let charIndex = 0;
-      const typeInterval = setInterval(() => {
-        if (charIndex < result.message.length) {
-          setResponse(result.message.slice(0, charIndex + 1));
-          charIndex++;
-        } else {
-          clearInterval(typeInterval);
-          setIsTyping(false);
-          setRecommendedId(result.eventId);
-          onRecommend(result.eventId);
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/ai/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, events }),
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        setResponse(`❌ Ошибка: ${data.error}`);
+      } else {
+        // Убираем служебную строку из текста
+        const cleanAnswer = data.answer.replace(/РЕКОМЕНДУЮ_ID:\s*[\d,\s]+/i, '').trim();
+        setResponse(cleanAnswer);
+        
+        // Парсим ID (с fallback)
+        const ids = extractRecommendedIds(data.answer);
+        if (ids.length > 0) {
+          onRecommend(ids);
         }
-      }, 30);
-    }, 800);
+      }
+    } catch (err) {
+      console.error(err);
+      setResponse('❌ Не удалось связаться с сервером.');
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const handleExampleClick = (example: string) => {
     setQuery(example);
-    inputRef.current?.focus();
+    setTimeout(() => handleSend(), 100);
   };
 
   const handleClear = () => {
     setQuery('');
     setResponse('');
-    setRecommendedId(null);
-    onRecommend(null);
+    onRecommend([]);
     inputRef.current?.focus();
   };
 
@@ -164,21 +123,22 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ onRecommend, events })
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           placeholder="Например: хочу куда-нибудь бесплатно..."
           className="ai-assistant__input"
+          disabled={isTyping}
         />
-        {query && (
+        {query && !isTyping && (
           <button className="ai-assistant__clear" onClick={handleClear}>
             <X size={16} />
           </button>
         )}
         <button 
-          className={`ai-assistant__send ${!query.trim() ? 'disabled' : ''}`}
+          className={`ai-assistant__send ${!query.trim() || isTyping ? 'disabled' : ''}`}
           onClick={handleSend}
-          disabled={!query.trim()}
+          disabled={!query.trim() || isTyping}
         >
-          <Send size={18} />
+          {isTyping ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
         </button>
       </div>
 
@@ -193,29 +153,30 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ onRecommend, events })
           >
             <div className="ai-assistant__response-content">
               <Sparkles size={16} className="ai-icon" />
-              <p>{response}</p>
-              {isTyping && <span className="typing-cursor">|</span>}
+              <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{response}</p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="ai-assistant__examples">
-        <span className="examples-label">Примеры:</span>
-        <div className="examples-list">
-          {exampleQueries.map((example, index) => (
-            <motion.button
-              key={index}
-              className="example-chip"
-              onClick={() => handleExampleClick(example)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {example}
-            </motion.button>
-          ))}
+      {!response && !isTyping && (
+        <div className="ai-assistant__examples">
+          <span className="examples-label">Примеры:</span>
+          <div className="examples-list">
+            {exampleQueries.map((example, index) => (
+              <motion.button
+                key={index}
+                className="example-chip"
+                onClick={() => handleExampleClick(example)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {example}
+              </motion.button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </motion.div>
   );
 };
