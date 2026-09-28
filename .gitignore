@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+backend/cityactive.db
+
+__pycache__/
+*.pyc
+
+.venv/
