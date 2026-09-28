@@ -1,7 +1,7 @@
 .toast {
   position: fixed;
   top: 20px;
-  right: 520px;
+  right: 430px;
   background: #14b8a6;
   color: white;
   padding: 16px 20px;
@@ -91,6 +91,6 @@
 /* Мобильная версия для бейджа */
 @media (max-width: 480px) {
   .toast--badge {
-    top: 100px; /* Ниже первого на мобильном */
+    top: 90px; /* Ниже первого на мобильном */
   }
 }
