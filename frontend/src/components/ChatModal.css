@@ -251,3 +251,14 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* Базовая адаптивность */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Убирает горизонтальный скролл */
+}

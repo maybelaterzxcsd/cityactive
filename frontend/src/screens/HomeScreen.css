@@ -9,9 +9,14 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 24px;
+  gap: 16px;
 }
 
-.header-left h1 {
+.header-left {
+  flex: 1;
+}
+
+.home-header h1 {
   font-size: 28px;
   font-weight: 800;
   margin: 0 0 4px 0;
@@ -21,28 +26,30 @@
 }
 
 .home-subtitle {
+  font-size: 14px;
   color: #a0a0b0;
   margin: 0;
-  font-size: 14px;
 }
 
 .my-events-btn {
   display: flex;
   align-items: center;
   gap: 6px;
+  padding: 8px 16px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  padding: 8px 16px;
   border-radius: 20px;
+  color: #c0c0d0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .my-events-btn:hover {
   background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 .filters {
@@ -119,4 +126,44 @@
   text-align: center;
   padding: 40px 20px;
   color: #a0a0b0;
+}
+
+/* Базовая адаптивность */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Убирает горизонтальный скролл */
+}
+
+@media (max-width: 480px) {
+  .home-screen { padding: 12px; }
+  .home-header { flex-direction: column; gap: 8px; }
+  .home-header h1 { font-size: 22px; }
+  .filters { flex-wrap: wrap; gap: 6px; }
+  .chip { padding: 6px 10px; font-size: 12px; }
+  .events-list { gap: 16px; }
+}
+
+@media (max-width: 480px) {
+  .home-header {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .home-header h1 {
+    font-size: 22px;
+  }
+  
+  .home-subtitle {
+    font-size: 12px;
+  }
+  
+  .my-events-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
 }

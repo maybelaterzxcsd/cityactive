@@ -168,3 +168,14 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* Базовая адаптивность */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Убирает горизонтальный скролл */
+}

@@ -60,7 +60,7 @@ const categoryIcons: Record<string, string> = {
   anime: "✨",
   boardgames: "🎮",
   volunteering: "🤝",
-  music: "🎵",
+  music: "",
   sport: "⚽",
   art: "🎨",
   tech: "💻",
@@ -74,6 +74,7 @@ export const EventDetailScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState({ visible: false, message: "" });
+  const [badgeToast, setBadgeToast] = useState({ visible: false, message: "" });
   const [animatedCount, setAnimatedCount] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0 });
@@ -116,12 +117,12 @@ export const EventDetailScreen: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // 3. Запись как УЧАСТНИК (с отправкой user_id через MAX Bridge)
+  // 3. Запись как УЧАСТНИК (с двумя toast по очереди)
   const handleJoin = async () => {
     if (!id || isJoining) return;
 
     setIsJoining(true);
-    const userId = maxBridge.getUserId(); // <-- ИСПОЛЬЗУЕМ MAX BRIDGE
+    const userId = maxBridge.getUserId();
     
     try {
       const response = await fetch(`${API_URL}/events/${id}/join`, {
@@ -137,22 +138,29 @@ export const EventDetailScreen: React.FC = () => {
       setEvent((prev) => prev ? { ...prev, participantsCount: result.new_count || (prev.participantsCount + 1) } : prev);
       setAnimatedCount(result.new_count || (event ? event.participantsCount + 1 : 0));
 
-      const badgeMsg = result.new_badge ? `\n🏆 Новый бейдж: ${result.new_badge}!` : "";
-      setToast({ visible: true, message: `✅ Вы успешно записаны!${badgeMsg}` });
+      // Первый toast — успех записи
+      setToast({ visible: true, message: "Вы успешно записаны!" });
+      
+      // Второй toast — бейдж через 1.5 сек (если есть)
+      if (result.new_badge) {
+        setTimeout(() => {
+          setBadgeToast({ visible: true, message: `Новый бейдж: ${result.new_badge}!` });
+        }, 1500);
+      }
     } catch (err: any) {
-      console.error("❌ Ошибка при записи:", err);
-      setToast({ visible: true, message: err.message || "❌ Ошибка при записи." });
+      console.error("Ошибка при записи:", err);
+      setToast({ visible: true, message: err.message || "Ошибка при записи." });
     } finally {
       setIsJoining(false);
     }
   };
 
-  // 4. Запись как ВОЛОНТЁР (с отправкой user_id через MAX Bridge)
+  // 4. Запись как ВОЛОНТЁР (с двумя toast по очереди)
   const handleVolunteer = async () => {
     if (!id || isJoining) return;
 
     setIsJoining(true);
-    const userId = maxBridge.getUserId(); // <-- ИСПОЛЬЗУЕМ MAX BRIDGE
+    const userId = maxBridge.getUserId();
 
     try {
       const response = await fetch(`${API_URL}/events/${id}/join`, {
@@ -167,11 +175,21 @@ export const EventDetailScreen: React.FC = () => {
 
       setEvent((prev) => prev ? { ...prev, participantsCount: result.new_count || (prev.participantsCount + 1) } : prev);
       
-      const badgeMsg = result.new_badge ? `\n🏆 Новый бейдж: ${result.new_badge}!` : "";
-      setToast({ visible: true, message: `🤝 Спасибо! Вы записаны волонтёром (+${result.hours_earned || 2} ч).${badgeMsg}` });
+      // Первый toast — успех записи волонтёром
+      setToast({ visible: true, message: "Спасибо! Вы записаны волонтёром!" });
+      
+      // Второй toast — бейдж и часы через 1.5 сек
+      setTimeout(() => {
+        const hoursMsg = result.hours_earned ? ` (+${result.hours_earned} ч)` : "";
+        const badgeMsg = result.new_badge ? `Новый бейдж: ${result.new_badge}!` : "";
+        const message = `${badgeMsg}${hoursMsg}`.trim();
+        if (message) {
+          setBadgeToast({ visible: true, message });
+        }
+      }, 1500);
     } catch (err: any) {
-      console.error("❌ Ошибка при записи волонтёром:", err);
-      setToast({ visible: true, message: err.message || "❌ Ошибка при записи." });
+      console.error("Ошибка при записи волонтёром:", err);
+      setToast({ visible: true, message: err.message || "Ошибка при записи." });
     } finally {
       setIsJoining(false);
     }
@@ -184,7 +202,6 @@ export const EventDetailScreen: React.FC = () => {
     const shareText = `Смотри, крутое событие: ${event.title}!`;
     const shareLink = `${window.location.origin}?event_id=${id}`;
 
-    // Вызываем нативный шеринг MAX (или копирование в браузере)
     maxBridge.share(shareText, shareLink);
   };
 
@@ -362,10 +379,20 @@ export const EventDetailScreen: React.FC = () => {
         />
       </div>
 
+      {/* Первый toast — успех */}
       <Toast
         message={toast.message}
         isVisible={toast.visible}
         onClose={() => setToast({ ...toast, visible: false })}
+        variant="success"
+      />
+
+      {/* Второй toast — бейдж (появляется через 1.5 сек) */}
+      <Toast
+        message={badgeToast.message}
+        isVisible={badgeToast.visible}
+        onClose={() => setBadgeToast({ ...badgeToast, visible: false })}
+        variant="badge"
       />
     </motion.div>
   );

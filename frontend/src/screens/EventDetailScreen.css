@@ -514,3 +514,24 @@
   color: #818cf8;
   flex-shrink: 0;
 }
+
+/* Базовая адаптивность */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Убирает горизонтальный скролл */
+}
+
+@media (max-width: 480px) {
+  .detail-screen { padding: 12px; }
+  .title-row h1 { font-size: 20px; }
+  .meta-item { font-size: 13px; }
+  .btn { padding: 12px; font-size: 14px; width: 100%; }
+  .detail-actions { gap: 8px; }
+  .detail-links { flex-direction: column; }
+  .link-item { width: 100%; }
+}

@@ -202,3 +202,26 @@
 .btn-share:active {
   transform: scale(0.98);
 }
+
+/* Базовая адаптивность */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Убирает горизонтальный скролл */
+}
+
+@media (max-width: 480px) {
+  .event-card__content { padding: 12px; }
+  .event-card__title { font-size: 16px; }
+  .event-card__top { flex-wrap: wrap; gap: 6px; }
+  .event-card__category, .event-card__free, .event-card__age {
+    font-size: 10px; padding: 3px 8px;
+  }
+  .meta-row { font-size: 12px; }
+  .btn-share { font-size: 12px; padding: 8px; }
+  .fomo-badges-row { flex-direction: column; gap: 4px; }
+}
