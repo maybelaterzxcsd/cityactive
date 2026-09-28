@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from typing import List
 import json
@@ -28,7 +29,7 @@ app.add_middleware(
 
 # === НАСТРОЙКИ GIGACHAT ===
 GIGACHAT_AUTH_KEY = "MDFhMGRkYTAtOGZjOC03MTBjLTk0OGQtODkzMWYwN2Y1NzU0Ojc5NjVkNWE0LTAyMDktNGFhOS04MTZiLTI4ZGRiN2UwN2I5MA=="
-GIGACHAT_MODEL = "GigaChat-2"  # Правильное название из списка моделей
+GIGACHAT_MODEL = "GigaChat-2"
 # ==========================
 
 class EventResponse:
@@ -49,6 +50,8 @@ class EventResponse:
         self.distance = event.distance
         self.image = event.image
         self.participants = json.loads(event.participants) if event.participants else []
+        # Добавляем volunteers_count, если поле есть в модели
+        self.volunteersCount = getattr(event, 'volunteers_count', 0) or 0
 
 @app.get("/")
 def read_root():
@@ -66,8 +69,11 @@ def get_event(event_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Event not found")
     return EventResponse(event).__dict__
 
+# =========================================================
+# ОБНОВЛЁННЫЙ ЭНДПОИНТ /join (принимает user_id и role)
+# =========================================================
 @app.post("/api/events/{event_id}/join")
-def join_event(event_id: str, db: Session = Depends(get_db)):
+def join_event(event_id: str, data: dict, db: Session = Depends(get_db)):
     event = db.query(EventDB).filter(EventDB.id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
@@ -75,18 +81,38 @@ def join_event(event_id: str, db: Session = Depends(get_db)):
     if event.participants_count >= event.max_participants:
         return {"error": "Мест нет"}
     
+    # Получаем user_id и role из тела запроса (от фронтенда)
+    user_id = data.get("user_id", "demo_user")
+    role = data.get("role", "participant")  # "participant" или "volunteer"
+    
     event.participants_count += 1
-    import random
-    user_id = f"user_{random.randint(1000, 9999)}"
+    
+    # Если волонтёр — увеличиваем счётчик волонтёров
+    if role == "volunteer":
+        current_volunteers = getattr(event, 'volunteers_count', 0) or 0
+        event.volunteers_count = current_volunteers + 1
+        hours_earned = 2
+        new_badge = "🫶 Волонтёр"  # Для демо всегда выдаём этот бейдж
+    else:
+        hours_earned = 0
+        new_badge = None
+    
+    # Сохраняем участника с ролью
     participants = json.loads(event.participants) if event.participants else []
-    participants.append(user_id)
+    participants.append({"user_id": user_id, "role": role})
     event.participants = json.dumps(participants)
     
     db.commit()
     db.refresh(event)
     
-    print(f"✅ Счётчик увеличен. Теперь участников: {event.participants_count}")
-    return {"message": "Успешно записались!", "new_count": event.participants_count}
+    print(f"✅ Запись: user_id={user_id}, role={role}. Теперь участников: {event.participants_count}")
+    
+    return {
+        "message": "Успешно записались!",
+        "new_count": event.participants_count,
+        "hours_earned": hours_earned,
+        "new_badge": new_badge
+    }
 
 @app.get("/api/my-events")
 def get_my_events(db: Session = Depends(get_db)):
@@ -96,7 +122,8 @@ def get_my_events(db: Session = Depends(get_db)):
     my_events = []
     for event in events:
         participants = json.loads(event.participants) if event.participants else []
-        if user_id in participants:
+        # Проверяем, есть ли user_id в списке участников
+        if any(p.get("user_id") == user_id if isinstance(p, dict) else p == user_id for p in participants):
             my_events.append(EventResponse(event).__dict__)
     
     return my_events
@@ -139,7 +166,6 @@ def ai_recommend(data: dict, db: Session = Depends(get_db)):
 Отвечай живо, с эмодзи, максимум 5-6 предложений."""
 
     try:
-        # 1. Получаем токен
         auth_key = GIGACHAT_AUTH_KEY.strip()
         rq_uid = str(uuid.uuid4())
         
@@ -162,7 +188,6 @@ def ai_recommend(data: dict, db: Session = Depends(get_db)):
             print(f"❌ ОШИБКА ТОКЕНА: {token_data}")
             return {"error": "Сбер не вернул токен. Смотри консоль бэкенда."}
             
-        # 2. Делаем запрос к чату с правильной моделью
         chat_response = requests.post(
             "https://api.giga.chat/v1/chat/completions",
             headers={
@@ -171,7 +196,7 @@ def ai_recommend(data: dict, db: Session = Depends(get_db)):
                 "Authorization": f"Bearer {access_token}"
             },
             json={
-                "model": GIGACHAT_MODEL,  # GigaChat-2
+                "model": GIGACHAT_MODEL,
                 "messages": [
                     {"role": "system", "content": "Ты — дружелюбный помощник."},
                     {"role": "user", "content": prompt}
@@ -230,3 +255,36 @@ def get_available_models():
         return models_response.json()
     except Exception as e:
         return {"error": str(e)}
+
+# =========================================================
+# ЭНДПОИНТ: Генерация .ics файла для календаря
+# =========================================================
+@app.get("/api/events/{event_id}/ics")
+def get_event_ics(event_id: str, db: Session = Depends(get_db)):
+    """Генерирует .ics файл для добавления события в календарь"""
+    event = db.query(EventDB).filter(EventDB.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    ics_content = f"""BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CityActive//RU
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:{event.id}@cityactive.ru
+DTSTAMP:20260929T120000Z
+DTSTART:20261005T180000Z
+DTEND:20261005T200000Z
+SUMMARY:{event.title}
+DESCRIPTION:{event.description.replace(chr(10), '\\n')}
+LOCATION:{event.location}
+END:VEVENT
+END:VCALENDAR"""
+    
+    return Response(
+        content=ics_content,
+        media_type="text/calendar",
+        headers={
+            "Content-Disposition": f"attachment; filename=event_{event_id}.ics"
+        }
+    )

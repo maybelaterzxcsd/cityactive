@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Calendar, Users, Clock } from 'lucide-react';
+import { MapPin, Calendar, Users, Clock, Share2 } from 'lucide-react';
 import './EventCard.css';
 
 interface EventCardProps {
@@ -19,12 +19,51 @@ interface EventCardProps {
     needsVolunteers: boolean;
     distance: string;
     image: string | null;
+    weather_warning?: boolean;
   };
   recommended?: boolean;
   onClick?: () => void;
 }
 
 export const EventCard: React.FC<EventCardProps> = ({ event, recommended, onClick }) => {
+  // Считаем оставшиеся места
+  const spotsLeft = event.maxParticipants - event.participantsCount;
+  const isHot = spotsLeft > 0 && spotsLeft <= 5;
+
+  // Проверка погоды (мок: если есть поле weather_warning ИЛИ в названии "пробежка" для демо)
+  const isRainy = event.weather_warning === true || event.title.toLowerCase().includes('пробежка');
+
+  // Склонение слова "место"
+  const getSpotsText = (count: number) => {
+    if (count === 1) return 'место';
+    if (count >= 2 && count <= 4) return 'места';
+    return 'мест';
+  };
+
+  // Функция "Поделиться"
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Чтобы не срабатывал переход по карточке
+    
+    const shareData = {
+      title: event.title,
+      text: `Смотри, крутое событие: ${event.title}!`,
+      url: `${window.location.origin}?event_id=${event.id}` // Deep link для MAX
+    };
+
+    try {
+      if (navigator.share) {
+        // Нативный шеринг (работает в MAX и на мобильных)
+        await navigator.share(shareData);
+      } else {
+        // Фоллбэк для десктопа: копируем в буфер обмена
+        await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+        alert('✅ Ссылка скопирована в буфер обмена!');
+      }
+    } catch (err) {
+      console.error('Ошибка при шаринге:', err);
+    }
+  };
+
   return (
     <div className={`event-card ${recommended ? 'recommended' : ''}`} onClick={onClick}>
       {event.image && (
@@ -43,6 +82,20 @@ export const EventCard: React.FC<EventCardProps> = ({ event, recommended, onClic
             <span className="event-card__free">Бесплатно</span>
           )}
           <span className="event-card__age">{event.ageRestriction}+</span>
+        </div>
+
+        {/* МЕТКИ FOMO */}
+        <div className="fomo-badges-row">
+          {isHot && (
+            <div className="badge-fomo badge-hot">
+               🔥 Осталось {spotsLeft} {getSpotsText(spotsLeft)}!
+            </div>
+          )}
+          {isRainy && (
+            <div className="badge-fomo badge-weather">
+              ⚠️ На улице, возможен дождь ☔
+            </div>
+          )}
         </div>
 
         <h3 className="event-card__title">{event.title}</h3>
@@ -69,6 +122,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event, recommended, onClic
             <span>{event.participantsCount}/{event.maxParticipants}</span>
           </div>
         </div>
+
+        {/* КНОПКА ПОДЕЛИТЬСЯ */}
+        <button className="btn-share" onClick={handleShare}>
+          <Share2 size={14} />
+          Поделиться
+        </button>
       </div>
     </div>
   );

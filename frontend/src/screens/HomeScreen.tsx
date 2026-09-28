@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Flame, Calendar, Gift, MapPin, User } from "lucide-react";
 import { EventCard } from "../components/EventCard";
 import { AIAssistant } from "../components/AIAssistant";
@@ -29,11 +29,22 @@ interface CityEvent {
 
 export const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // <-- ДОБАВЛЕНО для Deep Linking
   const [events, setEvents] = useState<CityEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [recommendedIds, setRecommendedIds] = useState<string[]>([]);
+
+  // Deep Linking: если в URL есть ?event_id=, сразу переходим на событие
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const eventId = params.get('event_id');
+    
+    if (eventId) {
+      navigate(`/event/${eventId}`);
+    }
+  }, [location.search, navigate]);
 
   useEffect(() => {
     fetch(`${API_URL}/events`)
