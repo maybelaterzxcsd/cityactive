@@ -55,36 +55,60 @@
 .filters {
   display: flex;
   gap: 8px;
+  margin-bottom: 20px;
   overflow-x: auto;
-  padding-bottom: 16px;
-  margin-bottom: 16px;
-  scrollbar-width: none;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+  scrollbar-width: none; /* Скрываем скроллбар для Firefox */
 }
 
 .filters::-webkit-scrollbar {
-  display: none;
+  display: none; /* Скрываем скроллбар для Chrome/Safari */
 }
 
 .chip {
   display: flex;
   align-items: center;
   gap: 6px;
+  padding: 8px 14px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #c0c0d0;
-  padding: 8px 16px;
   border-radius: 20px;
+  color: #c0c0d0;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  white-space: nowrap;
   transition: all 0.2s;
+  white-space: nowrap; /* Запрещаем перенос текста */
+  flex-shrink: 0; /* Чипы не сжимаются */
+}
+
+.chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .chip--active {
-  background: var(--color-accent, #6366f1);
+  background: #6366f1;
+  border-color: #6366f1;
   color: white;
-  border-color: var(--color-accent, #6366f1);
+}
+
+/* Мобильная версия */
+@media (max-width: 480px) {
+  .filters {
+    gap: 6px;
+    padding: 0 12px 8px 12px; /* Добавляем отступы по краям для скролла */
+    margin-left: -12px; /* Компенсируем отступы контейнера */
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  
+  .chip {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
 }
 
 /* СПИСОК СОБЫТИЙ */

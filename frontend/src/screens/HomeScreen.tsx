@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Flame, Calendar, Gift, MapPin, User } from "lucide-react";
+import { Flame, Calendar, Gift, MapPin, User, Wallet } from "lucide-react"; // <-- Добавлен Wallet
 import { EventCard } from "../components/EventCard";
 import { AIAssistant } from "../components/AIAssistant";
 import "./HomeScreen.css";
 
 const API_URL = "http://127.0.0.1:8000/api";
 
-type FilterType = "all" | "today" | "tomorrow" | "free" | "nearby";
+// <-- Добавлены новые типы фильтров
+type FilterType = "all" | "today" | "tomorrow" | "free" | "under500" | "under1000" | "nearby";
 
 interface CityEvent {
   id: string;
@@ -29,7 +30,7 @@ interface CityEvent {
 
 export const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // <-- ДОБАВЛЕНО для Deep Linking
+  const location = useLocation();
   const [events, setEvents] = useState<CityEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -79,6 +80,10 @@ export const HomeScreen: React.FC = () => {
             return event.date.toLowerCase().includes("завтра");
           case "free":
             return event.price === 0;
+          case "under500": // <-- НОВОЕ
+            return event.price > 0 && event.price <= 500;
+          case "under1000": // <-- НОВОЕ
+            return event.price > 0 && event.price <= 1000;
           case "nearby":
             const distance = parseFloat(event.distance.replace(" км", ""));
             return distance <= 3;
@@ -163,6 +168,21 @@ export const HomeScreen: React.FC = () => {
         >
           <Gift size={16} /> Бесплатно
         </button>
+        
+        {/* НОВЫЕ ЧИПЫ ФИЛЬТРОВ ПО ЦЕНЕ */}
+        <button
+          className={`chip ${activeFilter === "under500" ? "chip--active" : ""}`}
+          onClick={() => setActiveFilter("under500")}
+        >
+          <Wallet size={16} /> До 500₽
+        </button>
+        <button
+          className={`chip ${activeFilter === "under1000" ? "chip--active" : ""}`}
+          onClick={() => setActiveFilter("under1000")}
+        >
+          <Wallet size={16} /> До 1000₽
+        </button>
+
         <button
           className={`chip ${activeFilter === "nearby" ? "chip--active" : ""}`}
           onClick={() => setActiveFilter("nearby")}
