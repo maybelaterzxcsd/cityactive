@@ -479,40 +479,50 @@
   color: white;
 }
 
-/* Блок полезных ссылок */
+/* Блок с полезными ссылками — делаем ненавязчивым */
 .detail-links {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-  margin-top: 16px;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .link-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
   color: #c0c0d0;
-  text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
+  text-decoration: none;
   transition: all 0.2s;
+  cursor: pointer;
 }
 
 .link-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(99, 102, 241, 0.2);
   color: white;
-  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.link-item:active {
+  transform: scale(0.98);
 }
 
 .link-icon {
-  color: #818cf8;
   flex-shrink: 0;
+  color: #6b7280;
+}
+
+.link-item:hover .link-icon {
+  color: #6366f1;
 }
 
 /* Базовая адаптивность */
