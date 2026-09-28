@@ -1,56 +1,38 @@
-import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { HomeScreen } from './screens/HomeScreen';
-import { EventDetailScreen } from './screens/EventDetailScreen';
-import { MyEventsScreen } from './screens/MyEventsScreen';
-import { ProfileScreen } from './screens/ProfileScreen';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { maxBridge } from './utils/maxBridge';
 
-// Компонент-обёртка для обработки диплинков
-const AppRoutes: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+// Импортируй свои экраны здесь (проверь, что пути правильные!)
+import { HomeScreen } from './screens/HomeScreen'; 
+import { EventDetailScreen } from './screens/EventDetailScreen';
+// import { ProfileScreen } from './screens/ProfileScreen'; // Раскомментируй, если есть
 
-  useEffect(() => {
-    // Инициализация MAX Bridge
-    maxBridge.ready();
-    maxBridge.expand();
-
-    // Проверяем диплинк из MAX (start_param)
-    const startParam = maxBridge.getStartParam();
-    if (startParam) {
-      console.log('📡 MAX Bridge: открыто по диплинку с параметром:', startParam);
-      // Если start_param = "event_123", переходим на событие
-      if (startParam.startsWith('event_')) {
-        const eventId = startParam.replace('event_', '');
-        navigate(`/event/${eventId}`, { replace: true });
-      }
-    }
-
-    // Также проверяем обычный URL-параметр ?event_id=
-    const params = new URLSearchParams(location.search);
-    const eventId = params.get('event_id');
-    if (eventId) {
-      navigate(`/event/${eventId}`, { replace: true });
-    }
-  }, [location.search, navigate]);
-
+const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<HomeScreen />} />
       <Route path="/event/:id" element={<EventDetailScreen />} />
-      <Route path="/my-events" element={<MyEventsScreen />} />
-      <Route path="/profile" element={<ProfileScreen />} />
+      {/* <Route path="/profile" element={<ProfileScreen />} /> */}
     </Routes>
   );
 };
 
-function App() {
+const App: React.FC = () => {
+  useEffect(() => {
+    // Безопасный вызов внутри try-catch. Если MAX нет, приложение ВСЁ РАВНО ЗАРАБОТАЕТ.
+    try {
+      maxBridge.ready();
+      maxBridge.expand();
+    } catch (error) {
+      console.warn('MAX Bridge не доступен, работаем в обычном режиме');
+    }
+  }, []);
+
   return (
-    <BrowserRouter>
+    <Router>
       <AppRoutes />
-    </BrowserRouter>
+    </Router>
   );
-}
+};
 
 export default App;
