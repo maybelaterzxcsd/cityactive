@@ -60,7 +60,7 @@ const categoryIcons: Record<string, string> = {
   anime: "✨",
   boardgames: "🎮",
   volunteering: "🤝",
-  music: "",
+  music: "🎵",
   sport: "⚽",
   art: "🎨",
   tech: "💻",
@@ -117,7 +117,7 @@ export const EventDetailScreen: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // 3. Запись как УЧАСТНИК (с двумя toast по очереди)
+  // 3. Запись как УЧАСТНИК (с двумя toast по очереди и защитой от 409)
   const handleJoin = async () => {
     if (!id || isJoining) return;
 
@@ -133,29 +133,35 @@ export const EventDetailScreen: React.FC = () => {
       
       const result = await response.json();
       
-      if (!response.ok) throw new Error(result.error || "Failed to join");
+      if (!response.ok) {
+        // Проверяем, это ошибка "уже записан" (409 Conflict)
+        if (response.status === 409) {
+          throw new Error("Вы уже записаны на это событие");
+        }
+        throw new Error(result.error || "Failed to join");
+      }
 
       setEvent((prev) => prev ? { ...prev, participantsCount: result.new_count || (prev.participantsCount + 1) } : prev);
       setAnimatedCount(result.new_count || (event ? event.participantsCount + 1 : 0));
 
       // Первый toast — успех записи
-      setToast({ visible: true, message: "Вы успешно записаны!" });
+      setToast({ visible: true, message: "✅ Вы успешно записаны!" });
       
       // Второй toast — бейдж через 1.5 сек (если есть)
       if (result.new_badge) {
         setTimeout(() => {
-          setBadgeToast({ visible: true, message: `Новый бейдж: ${result.new_badge}!` });
+          setBadgeToast({ visible: true, message: `🏆 Новый бейдж: ${result.new_badge}!` });
         }, 1500);
       }
     } catch (err: any) {
       console.error("Ошибка при записи:", err);
-      setToast({ visible: true, message: err.message || "Ошибка при записи." });
+      setToast({ visible: true, message: err.message || "❌ Ошибка при записи." });
     } finally {
       setIsJoining(false);
     }
   };
 
-  // 4. Запись как ВОЛОНТЁР (с двумя toast по очереди)
+  // 4. Запись как ВОЛОНТЁР (с двумя toast по очереди и защитой от 409)
   const handleVolunteer = async () => {
     if (!id || isJoining) return;
 
@@ -171,17 +177,23 @@ export const EventDetailScreen: React.FC = () => {
       
       const result = await response.json();
       
-      if (!response.ok) throw new Error(result.error || "Failed to join");
+      if (!response.ok) {
+        // Проверяем, это ошибка "уже записан" (409 Conflict)
+        if (response.status === 409) {
+          throw new Error("Вы уже записаны волонтёром на это событие");
+        }
+        throw new Error(result.error || "Failed to join");
+      }
 
       setEvent((prev) => prev ? { ...prev, participantsCount: result.new_count || (prev.participantsCount + 1) } : prev);
       
       // Первый toast — успех записи волонтёром
-      setToast({ visible: true, message: "Спасибо! Вы записаны волонтёром!" });
+      setToast({ visible: true, message: "🤝 Спасибо! Вы записаны волонтёром!" });
       
       // Второй toast — бейдж и часы через 1.5 сек
       setTimeout(() => {
         const hoursMsg = result.hours_earned ? ` (+${result.hours_earned} ч)` : "";
-        const badgeMsg = result.new_badge ? `Новый бейдж: ${result.new_badge}!` : "";
+        const badgeMsg = result.new_badge ? `🏆 Новый бейдж: ${result.new_badge}!` : "";
         const message = `${badgeMsg}${hoursMsg}`.trim();
         if (message) {
           setBadgeToast({ visible: true, message });
@@ -189,7 +201,7 @@ export const EventDetailScreen: React.FC = () => {
       }, 1500);
     } catch (err: any) {
       console.error("Ошибка при записи волонтёром:", err);
-      setToast({ visible: true, message: err.message || "Ошибка при записи." });
+      setToast({ visible: true, message: err.message || "❌ Ошибка при записи." });
     } finally {
       setIsJoining(false);
     }
