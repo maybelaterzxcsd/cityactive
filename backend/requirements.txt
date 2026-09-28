@@ -4,3 +4,4 @@ sqlalchemy
 requests
 urllib3
 python-dotenv
+tzdata
