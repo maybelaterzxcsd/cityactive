@@ -117,7 +117,7 @@ export const EventDetailScreen: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // 3. Запись как УЧАСТНИК (с двумя toast по очереди и защитой от 409)
+  // 3. Запись как УЧАСТНИК
   const handleJoin = async () => {
     if (!id || isJoining) return;
 
@@ -134,34 +134,28 @@ export const EventDetailScreen: React.FC = () => {
       const result = await response.json();
       
       if (!response.ok) {
-        // Проверяем, это ошибка "уже записан" (409 Conflict)
-        if (response.status === 409) {
-          throw new Error("Вы уже записаны на это событие");
-        }
-        throw new Error(result.error || "Failed to join");
+        throw new Error(result.detail || result.error || "Ошибка при записи");
       }
 
       setEvent((prev) => prev ? { ...prev, participantsCount: result.new_count || (prev.participantsCount + 1) } : prev);
       setAnimatedCount(result.new_count || (event ? event.participantsCount + 1 : 0));
 
-      // Первый toast — успех записи
-      setToast({ visible: true, message: "✅ Вы успешно записаны!" });
+      setToast({ visible: true, message: "Вы успешно записаны!" });
       
-      // Второй toast — бейдж через 1.5 сек (если есть)
       if (result.new_badge) {
         setTimeout(() => {
-          setBadgeToast({ visible: true, message: `🏆 Новый бейдж: ${result.new_badge}!` });
+          setBadgeToast({ visible: true, message: `Новый бейдж: ${result.new_badge}!` });
         }, 1500);
       }
     } catch (err: any) {
       console.error("Ошибка при записи:", err);
-      setToast({ visible: true, message: err.message || "❌ Ошибка при записи." });
+      setToast({ visible: true, message: err.message });
     } finally {
       setIsJoining(false);
     }
   };
 
-  // 4. Запись как ВОЛОНТЁР (с двумя toast по очереди и защитой от 409)
+  // 4. Запись как ВОЛОНТЁР
   const handleVolunteer = async () => {
     if (!id || isJoining) return;
 
@@ -178,19 +172,13 @@ export const EventDetailScreen: React.FC = () => {
       const result = await response.json();
       
       if (!response.ok) {
-        // Проверяем, это ошибка "уже записан" (409 Conflict)
-        if (response.status === 409) {
-          throw new Error("Вы уже записаны волонтёром на это событие");
-        }
-        throw new Error(result.error || "Failed to join");
+        throw new Error(result.detail || result.error || "Ошибка при записи");
       }
 
       setEvent((prev) => prev ? { ...prev, participantsCount: result.new_count || (prev.participantsCount + 1) } : prev);
       
-      // Первый toast — успех записи волонтёром
-      setToast({ visible: true, message: "🤝 Спасибо! Вы записаны волонтёром!" });
+      setToast({ visible: true, message: "Вы записаны волонтёром!" });
       
-      // Второй toast — бейдж и часы через 1.5 сек
       setTimeout(() => {
         const hoursMsg = result.hours_earned ? ` (+${result.hours_earned} ч)` : "";
         const badgeMsg = result.new_badge ? `🏆 Новый бейдж: ${result.new_badge}!` : "";
@@ -201,20 +189,24 @@ export const EventDetailScreen: React.FC = () => {
       }, 1500);
     } catch (err: any) {
       console.error("Ошибка при записи волонтёром:", err);
-      setToast({ visible: true, message: err.message || "❌ Ошибка при записи." });
+      setToast({ visible: true, message: ` ${err.message}` });
     } finally {
       setIsJoining(false);
     }
   };
 
-  // 5. ШАРИНГ С DEEP LINKING (через MAX Bridge)
+  // 5. ШАРИНГ С DEEP LINKING (ИСПРАВЛЕНО: добавлен Toast об успехе)
   const handleShare = async () => {
     if (!event || !id) return;
     
     const shareText = `Смотри, крутое событие: ${event.title}!`;
     const shareLink = `${window.location.origin}?event_id=${id}`;
 
-    maxBridge.share(shareText, shareLink);
+    const success = await maxBridge.share(shareText, shareLink);
+    
+    if (success) {
+      setToast({ visible: true, message: "Ссылка скопирована!" });
+    }
   };
 
   if (loading) {
@@ -322,7 +314,6 @@ export const EventDetailScreen: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Блок с полезными ссылками (Карты и Календарь) */}
         <motion.div
           className="detail-links glass-card"
           initial={{ opacity: 0, y: 20 }}
@@ -391,7 +382,6 @@ export const EventDetailScreen: React.FC = () => {
         />
       </div>
 
-      {/* Первый toast — успех */}
       <Toast
         message={toast.message}
         isVisible={toast.visible}
@@ -399,7 +389,6 @@ export const EventDetailScreen: React.FC = () => {
         variant="success"
       />
 
-      {/* Второй toast — бейдж (появляется через 1.5 сек) */}
       <Toast
         message={badgeToast.message}
         isVisible={badgeToast.visible}

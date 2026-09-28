@@ -187,7 +187,7 @@ def join_event(event_id: str, data: dict, db: Session = Depends(get_db)):
         user.volunteer_hours = (user.volunteer_hours or 0) + hours_earned
 
         badges = load_badges(user)
-        volunteer_badge = "🫶 Волонтёр"
+        volunteer_badge = "Волонтёр"
         if volunteer_badge not in badges:
             badges.append(volunteer_badge)
             new_badge = volunteer_badge
@@ -253,7 +253,7 @@ def ai_recommend(data: dict, db: Session = Depends(get_db)):
     if not GIGACHAT_AUTH_KEY:
         raise HTTPException(
             status_code=503,
-            detail="GIGACHAT_AUTH_KEY не настроен на сервере",
+            detail="ИИ заболел",
         )
 
     events_context = "\n".join(
@@ -383,7 +383,7 @@ def get_available_models():
     if not GIGACHAT_AUTH_KEY:
         raise HTTPException(
             status_code=503,
-            detail="GIGACHAT_AUTH_KEY не настроен на сервере",
+            detail="ИИ заболел",
         )
 
     try:

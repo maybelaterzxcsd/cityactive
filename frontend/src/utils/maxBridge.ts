@@ -1,5 +1,3 @@
-// src/utils/maxBridge.ts
-
 export const maxBridge = {
   ready: () => {
     if (typeof window !== 'undefined' && (window as any).WebApp?.ready) {
@@ -27,13 +25,49 @@ export const maxBridge = {
     return "Пользователь";
   },
   
-  share: (text: string, link: string) => {
+  share: async (text: string, link: string) => {
+    const fullText = `${text}\n${link}`;
+    
+    // 1. Пробуем нативный шеринг MAX
     if (typeof window !== 'undefined' && (window as any).WebApp?.shareContent) {
       (window as any).WebApp.shareContent({ text, link });
-    } else if (navigator.share) {
-      navigator.share({ title: text, text, url: link }).catch(() => {});
-    } else {
-      navigator.clipboard?.writeText(`${text}\n${link}`).catch(() => {});
+      return true;
+    }
+    
+    // 2. Пробуем нативный шеринг мобильного браузера
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title: text, text, url: link });
+        return true;
+      } catch (err) {
+        return false;
+      }
+    }
+    
+    // 3. Пробуем Clipboard API (работает на HTTPS)
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(fullText);
+        return true;
+      } catch (err) {
+        console.warn("Clipboard API failed:", err);
+      }
+    }
+    
+    // 4. Фоллбэк для HTTP (работает ВЕЗДЕ, включая телефон по локальной сети)
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = fullText;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return true;
+    } catch (err) {
+      console.error("Copy failed:", err);
+      return false;
     }
   },
   

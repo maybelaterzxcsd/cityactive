@@ -8,7 +8,14 @@ import "./HomeScreen.css";
 const API_URL = "http://127.0.0.1:8000/api";
 
 // <-- Добавлены новые типы фильтров
-type FilterType = "all" | "today" | "tomorrow" | "free" | "under500" | "under1000" | "nearby";
+type FilterType =
+  | "all"
+  | "today"
+  | "tomorrow"
+  | "free"
+  | "under500"
+  | "under1000"
+  | "nearby";
 
 interface CityEvent {
   id: string;
@@ -40,8 +47,8 @@ export const HomeScreen: React.FC = () => {
   // Deep Linking: если в URL есть ?event_id=, сразу переходим на событие
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const eventId = params.get('event_id');
-    
+    const eventId = params.get("event_id");
+
     if (eventId) {
       navigate(`/event/${eventId}`);
     }
@@ -60,7 +67,7 @@ export const HomeScreen: React.FC = () => {
       .catch((err) => {
         console.error("Error fetching events:", err);
         setError(
-          "Не удалось загрузить события. Проверьте подключение к серверу."
+          "Не удалось загрузить события. Проверьте подключение к серверу.",
         );
       })
       .finally(() => setLoading(false));
@@ -80,10 +87,10 @@ export const HomeScreen: React.FC = () => {
             return event.date.toLowerCase().includes("завтра");
           case "free":
             return event.price === 0;
-          case "under500": // <-- НОВОЕ
-            return event.price > 0 && event.price <= 500;
-          case "under1000": // <-- НОВОЕ
-            return event.price > 0 && event.price <= 1000;
+          case "under500":
+            return event.price <= 500;
+          case "under1000":
+            return event.price <= 1000;
           case "nearby":
             const distance = parseFloat(event.distance.replace(" км", ""));
             return distance <= 3;
@@ -135,10 +142,7 @@ export const HomeScreen: React.FC = () => {
           <h1>ГородАктив</h1>
           <p className="home-subtitle">Найди свой движ сегодня</p>
         </div>
-        <button
-          className="my-events-btn"
-          onClick={() => navigate("/profile")}
-        >
+        <button className="my-events-btn" onClick={() => navigate("/profile")}>
           <User size={18} /> Профиль
         </button>
       </header>
@@ -168,7 +172,7 @@ export const HomeScreen: React.FC = () => {
         >
           <Gift size={16} /> Бесплатно
         </button>
-        
+
         {/* НОВЫЕ ЧИПЫ ФИЛЬТРОВ ПО ЦЕНЕ */}
         <button
           className={`chip ${activeFilter === "under500" ? "chip--active" : ""}`}
