@@ -50,7 +50,6 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* Мобильная версия - ЦЕНТРИРОВАНИЕ */
 @media (max-width: 480px) {
   .toast {
     top: 16px;
@@ -74,7 +73,6 @@
   }
 }
 
-/* Модификатор для уведомления о бейдже */
 .toast--badge {
   background: linear-gradient(135deg, #f59e0b, #d97706);
   top: 90px;
@@ -91,7 +89,6 @@
   100% { transform: scale(1) rotate(0deg); }
 }
 
-/* Мобильная версия для бейджа */
 @media (max-width: 480px) {
   .toast--badge {
     top: 80px;

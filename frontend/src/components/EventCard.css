@@ -1,10 +1,11 @@
 .event-card {
-  background: var(--color-bg-card, #1e1e24);
+  background: #1e1e24 !important;
   border-radius: 16px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
 }
 
 .event-card:hover {
@@ -14,7 +15,7 @@
 
 .event-card.recommended {
   transform: translateY(-6px);
-  box-shadow: 0 0 0 2px var(--color-accent, #6366f1), 0 15px 40px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 0 2px #6366f1, 0 15px 40px rgba(99, 102, 241, 0.4) !important;
 }
 
 .event-card__image {
@@ -31,6 +32,35 @@
 
 .event-card__content {
   padding: 20px;
+  color: #ffffff !important;
+  background: #1e1e24 !important;
+}
+
+.event-card h3,
+.event-card p,
+.event-card span,
+.event-card__title,
+.event-card__location,
+.event-card__date,
+.event-card__price,
+.event-card__category,
+.event-card__volunteer,
+.event-card__free,
+.event-card__age,
+.event-card__top,
+.event-card__meta,
+.event-card__footer,
+.meta-row,
+.price-free,
+.price-paid,
+.participants,
+.btn-share {
+  color: #ffffff !important;
+}
+
+.event-card__meta .meta-row,
+.meta-row {
+  color: #a0a0b0 !important;
 }
 
 .event-card__top {
@@ -43,7 +73,7 @@
 
 .event-card__category {
   background: rgba(99, 102, 241, 0.15);
-  color: #818cf8;
+  color: #818cf8 !important;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 12px;
@@ -53,7 +83,7 @@
 
 .event-card__volunteer {
   background: linear-gradient(135deg, #14b8a6, #06b6d4);
-  color: white;
+  color: white !important;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 11px;
@@ -62,7 +92,7 @@
 
 .event-card__free {
   background: rgba(74, 222, 128, 0.15);
-  color: #4ade80;
+  color: #4ade80 !important;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 12px;
@@ -71,7 +101,7 @@
 
 .event-card__age {
   background: rgba(255, 255, 255, 0.1);
-  color: #a0a0b0;
+  color: #a0a0b0 !important;
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 12px;
@@ -82,7 +112,7 @@
   font-size: 18px;
   font-weight: 700;
   margin: 0 0 12px 0;
-  color: #ffffff;
+  color: #ffffff !important;
   line-height: 1.3;
 }
 
@@ -94,14 +124,14 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #a0a0b0;
+  color: #a0a0b0 !important;
   font-size: 13px;
   margin-bottom: 4px;
 }
 
 .meta-row svg {
   flex-shrink: 0;
-  color: #6b7280;
+  color: #6b7280 !important;
 }
 
 .event-card__footer {
@@ -113,13 +143,13 @@
 }
 
 .price-free {
-  color: #4ade80;
+  color: #4ade80 !important;
   font-weight: 700;
   font-size: 14px;
 }
 
 .price-paid {
-  color: #fbbf24;
+  color: #fbbf24 !important;
   font-weight: 700;
   font-size: 14px;
 }
@@ -128,13 +158,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #a0a0b0;
+  color: #a0a0b0 !important;
   font-size: 13px;
 }
-
-/* ============================================ */
-/* ЕДИНЫЙ СТИЛЬ ДЛЯ ВСЕХ FOMO-БЕЙДЖЕЙ           */
-/* ============================================ */
 
 .fomo-badges-row {
   display: flex;
@@ -143,7 +169,6 @@
   margin-bottom: 10px;
 }
 
-/* Базовый стиль бейджа */
 .badge-fomo {
   display: inline-flex;
   align-items: center;
@@ -156,52 +181,42 @@
   border: 1px solid;
 }
 
-/* 🔥 Мало мест - красный */
 .badge-hot {
   background: rgba(239, 68, 68, 0.15);
   border-color: rgba(239, 68, 68, 0.4);
-  color: #f87171;
+  color: #f87171 !important;
   animation: pulse-hot 2s infinite;
 }
 
-/* ⚠️ Погода - желтый */
 .badge-weather {
   background: rgba(251, 191, 36, 0.15);
   border-color: rgba(251, 191, 36, 0.4);
-  color: #fbbf24;
+  color: #fbbf24 !important;
 }
 
-/* ️ Ранняя бронь - фиолетовый */
 .badge-early {
   background: rgba(139, 92, 246, 0.15);
   border-color: rgba(139, 92, 246, 0.4);
-  color: #a78bfa;
+  color: #a78bfa !important;
 }
 
-/* 🔥 Популярно - розовый */
 .badge-popular {
   background: rgba(236, 72, 153, 0.15);
   border-color: rgba(236, 72, 153, 0.4);
-  color: #f472b6;
+  color: #f472b6 !important;
 }
 
-/* 🌅 Утро - голубой */
 .badge-morning {
   background: rgba(59, 130, 246, 0.15);
   border-color: rgba(59, 130, 246, 0.4);
-  color: #60a5fa;
+  color: #60a5fa !important;
 }
 
-/* Анимация пульсации для "мало мест" */
 @keyframes pulse-hot {
   0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
   70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
   100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
-
-/* ============================================ */
-/* КНОПКА "ПОДЕЛИТЬСЯ"                          */
-/* ============================================ */
 
 .btn-share {
   display: flex;
@@ -211,9 +226,9 @@
   width: 100%;
   margin-top: 12px;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #a0a0b0;
+  color: #a0a0b0 !important;
   border-radius: 12px;
   font-size: 13px;
   font-weight: 500;
@@ -222,18 +237,14 @@
 }
 
 .btn-share:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
   border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-share:active {
   transform: scale(0.98);
 }
-
-/* ============================================ */
-/* АДАПТИВНОСТЬ                                 */
-/* ============================================ */
 
 * {
   box-sizing: border-box;

@@ -2,6 +2,8 @@
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
+  background: #0f0f14 !important; 
+  min-height: 100vh;
 }
 
 .home-header {
@@ -22,6 +24,7 @@
   margin: 0 0 4px 0;
   background: linear-gradient(135deg, #6366f1, #a855f7);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -59,12 +62,12 @@
   margin-bottom: 20px;
   overflow-x: auto;
   padding-bottom: 4px;
-  -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
-  scrollbar-width: none; /* Скрываем скроллбар для Firefox */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
 
 .filters::-webkit-scrollbar {
-  display: none; /* Скрываем скроллбар для Chrome/Safari */
+  display: none;
 }
 
 .chip {
@@ -80,8 +83,8 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  white-space: nowrap; /* Запрещаем перенос текста */
-  flex-shrink: 0; /* Чипы не сжимаются */
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .chip:hover {
@@ -95,12 +98,11 @@
   color: white;
 }
 
-/* Мобильная версия */
 @media (max-width: 480px) {
   .filters {
     gap: 6px;
-    padding: 0 12px 8px 12px; /* Добавляем отступы по краям для скролла */
-    margin-left: -12px; /* Компенсируем отступы контейнера */
+    padding: 0 12px 8px 12px;
+    margin-left: -12px;
     margin-right: -12px;
     padding-left: 12px;
     padding-right: 12px;
@@ -112,19 +114,16 @@
   }
 }
 
-/* СПИСОК СОБЫТИЙ */
 .events-list {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* ОБеРТКА */
 .event-card-wrapper {
   position: relative;
 }
 
-/* БЕЙДЖИК НА ОБеРТКЕ */
 .event-card-wrapper.recommended-badge::after {
   content: "✨ Выбор ИИ";
   position: absolute;
@@ -153,7 +152,6 @@
   color: #a0a0b0;
 }
 
-/* Базовая адаптивность */
 * {
   box-sizing: border-box;
 }
@@ -161,7 +159,7 @@
 body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Убирает горизонтальный скролл */
+  overflow-x: hidden;
 }
 
 @media (max-width: 480px) {

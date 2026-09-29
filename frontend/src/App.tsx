@@ -12,7 +12,7 @@ const AppRoutes = () => {
       <Route path="/" element={<HomeScreen />} />
       <Route path="/event/:id" element={<EventDetailScreen />} />
       <Route path="/profile" element={<ProfileScreen />} />
-      <Route path="/my-events" element={<ProfileScreen />} /> {/* <-- ДОБАВЛЕНО */}
+      <Route path="/my-events" element={<ProfileScreen />} />
     </Routes>
   );
 };

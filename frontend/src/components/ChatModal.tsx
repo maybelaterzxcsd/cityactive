@@ -89,7 +89,6 @@ export const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, eventTitl
 
   return (
     <>
-      {/* FAB кнопка */}
       <motion.button
         className="chat-fab"
         onClick={() => {}}
@@ -100,7 +99,6 @@ export const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, eventTitl
         <MessageCircle size={24} />
       </motion.button>
 
-      {/* Модалка */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -118,7 +116,6 @@ export const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, eventTitl
               exit={{ opacity: 0, y: 100, scale: 0.9 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
-              {/* Шапка */}
               <div className="chat-header">
                 <div className="chat-header__info">
                   <MessageCircle size={20} />
@@ -132,7 +129,6 @@ export const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, eventTitl
                 </button>
               </div>
 
-              {/* Сообщения */}
               <div className="chat-messages">
                 {messages.map((msg) => (
                   <motion.div
@@ -157,7 +153,6 @@ export const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, eventTitl
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Ввод */}
               <div className="chat-input">
                 <input
                   type="text"

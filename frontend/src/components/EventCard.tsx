@@ -168,7 +168,6 @@ export const EventCard: React.FC<EventCardProps> = ({
         </div>
       </div>
 
-      {/* Наше кастомное уведомление */}
       <Toast
         message={toast.message}
         isVisible={toast.visible}

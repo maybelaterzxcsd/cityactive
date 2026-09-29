@@ -90,7 +90,6 @@ export const Toast: React.FC<ToastProps> = ({
           to { transform: translateX(0); opacity: 1; }
         }
 
-        /* Мобильная версия: сверху по центру, более контрастное */
         @media (max-width: 768px) {
           .toast-notification {
             top: 16px;

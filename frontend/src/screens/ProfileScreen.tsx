@@ -114,7 +114,6 @@ export const ProfileScreen: React.FC = () => {
 
   return (
     <div className="profile-screen">
-      {/* ИСПРАВЛЕНО: profile-content теперь обертывает все, включая кнопку */}
       <div className="profile-content">
         
         <button className="profile-back-btn" onClick={() => navigate(-1)}>

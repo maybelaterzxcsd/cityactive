@@ -66,8 +66,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ events, onRecommend })
       filtered = filtered.filter(e => e.category === "sport");
       message += "Вот спортивные активности. ";
     }
-    
-    // ИСПРАВЛЕНО: безопасная проверка distance, чтобы не было краша на локале
+
     if (lowerQ.includes("рядом") || lowerQ.includes("близко")) {
       filtered = filtered.filter(e => {
         if (!e.distance) return false;
@@ -77,18 +76,16 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ events, onRecommend })
       message += "Отобрал события в шаговой доступности. ";
     }
 
-    // Fallback: если ничего не нашлось или запрос слишком общий
     if (filtered.length === 0) {
       filtered = evts.slice(0, 3);
       message = "По вашему точному запросу ничего не нашлось, но вот самые популярные события, которые могут вам понравиться: ";
     } else if (filtered.length > 3) {
-      filtered = filtered.slice(0, 3); // Ограничиваем до топ-3 для чистоты UI
+      filtered = filtered.slice(0, 3);
       message += `Вот топ-3 рекомендации: `;
     } else {
       message += `Вот что я нашёл: `;
     }
 
-    // Формируем ответ со скрытыми тегами для подсветки карточек
     const tags = filtered.map(e => `РЕКОМЕНДУЮ_${e.id}`).join(" ");
     const titles = filtered.map(e => `• ${e.title} (${e.date})`).join("\n");
     

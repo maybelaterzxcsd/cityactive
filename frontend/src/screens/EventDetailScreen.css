@@ -17,7 +17,6 @@
   }
 }
 
-/* HERO СЕКЦИЯ */
 .detail-hero {
   position: relative;
   height: 200px;
@@ -53,7 +52,6 @@
 }
 
 
-/* КОНТЕНТ */
 .detail-content {
   padding: var(--space-lg);
 }
@@ -113,7 +111,6 @@
   background: rgba(239, 68, 68, 0.25);
 }
 
-/* МЕТА-ИНФОРМАЦИЯ */
 .detail-meta {
   display: flex;
   flex-direction: column;
@@ -138,7 +135,6 @@
   flex-shrink: 0;
 }
 
-/* ПРОГРЕСС-БАР */
 .progress-section {
   margin-top: var(--space-lg);
   padding-top: var(--space-lg);
@@ -168,7 +164,6 @@
   font-weight: var(--font-weight-medium);
 }
 
-/* ОБРАТНЫЙ ОТСЧеТ */
 .countdown {
   display: flex;
   justify-content: space-between;
@@ -192,7 +187,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ОПИСАНИЕ */
 .detail-description {
   margin-bottom: var(--space-xl);
 }
@@ -219,7 +213,6 @@
   color: var(--color-text-muted);
 }
 
-/* КНОПКИ ДЕЙСТВИЙ */
 .detail-actions {
   display: flex;
   flex-direction: column;
@@ -228,10 +221,10 @@
 }
 
 .btn {
-  padding: 18px 32px;  /* было var(--space-lg) = 24px */
+  padding: 18px 32px;
   border: none;
   border-radius: var(--radius-lg);
-  font-size: 16px;  /* было var(--font-size-md) = 14px */
+  font-size: 16px; 
   font-weight: var(--font-weight-bold);
   cursor: pointer;
   transition: all var(--transition-normal);
@@ -242,8 +235,8 @@
   position: relative;
   overflow: hidden;
   font-family: var(--font-family);
-  width: 100%;  /* добавлено - кнопки на всю ширину */
-  min-height: 56px;  /* добавлено - минимальная высота */
+  width: 100%;
+  min-height: 56px; 
 }
 
 .btn::before {
@@ -322,7 +315,6 @@
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
 }
 
-/* ПОХОЖИЕ СОБЫТИЯ */
 .similar-section {
   margin-top: var(--space-xl);
   padding-top: var(--space-lg);
@@ -379,7 +371,6 @@
   color: var(--color-text-secondary);
 }
 
-/* GLASSMORPHISM */
 .glass-card {
   background: var(--color-bg-card);
   backdrop-filter: blur(20px);
@@ -388,7 +379,6 @@
   box-shadow: var(--shadow-md);
 }
 
-/* ЛОАДЕР И ОШИБКА */
 .loading-container,
 .error-container {
   display: flex;
@@ -433,8 +423,8 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: rgba(22, 22, 24, 0.85); /* цвет карточки с прозрачностью */
-  border: 1px solid rgba(255, 255, 255, 0.3); /* более заметная рамка */
+  background: rgba(22, 22, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-full);
   color: white;
   cursor: pointer;
@@ -479,7 +469,6 @@
   color: white;
 }
 
-/* Блок с полезными ссылками - делаем ненавязчивым */
 .detail-links {
   display: flex;
   flex-direction: column;
@@ -525,7 +514,6 @@
   color: #6366f1;
 }
 
-/* Базовая адаптивность */
 * {
   box-sizing: border-box;
 }
@@ -533,7 +521,7 @@
 body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Убирает горизонтальный скролл */
+  overflow-x: hidden;
 }
 
 @media (max-width: 480px) {
