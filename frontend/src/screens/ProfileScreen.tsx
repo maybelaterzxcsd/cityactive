@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Award, Calendar, User, Clock, MapPin } from "lucide-react";
+import { ArrowLeft, Award, Calendar, Clock, MapPin } from "lucide-react";
 import { maxBridge } from "../utils/maxBridge";
 import { Avatar, Button } from "@maxhub/max-ui";
 import "./ProfileScreen.css";
@@ -172,7 +172,7 @@ export const ProfileScreen: React.FC = () => {
           <div className="empty-state">
             <Calendar size={48} className="empty-state-icon" />
             <p className="empty-state-text">Вы пока не записаны ни на одно событие</p>
-            <Button mode="primary" size="l" onClick={() => navigate("/")}>
+            <Button mode="primary" size="large" onClick={() => navigate("/")}>
               Найти событие
             </Button>
           </div>

@@ -1,7 +1,8 @@
-interface EventType {
+export interface EventType {
   id: string;
   title: string;
   category: string;
+  categoryRu: string;
   date: string;
   location: string;
   distance: string;
@@ -10,12 +11,12 @@ interface EventType {
   needsVolunteers: boolean;
   participantsCount: number;
   maxParticipants: number;
-  image: string;
+  image: string | null;
   description: string;
   organizer: string;
 }
 
-export const mockEvents: Event[] = [
+export const mockEvents: EventType[] = [
   {
     id: '1',
     title: 'Аниме-сходка: Обсуждение нового сезона',

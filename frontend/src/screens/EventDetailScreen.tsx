@@ -104,7 +104,7 @@ export const EventDetailScreen: React.FC = () => {
         setEvent(data);
         setAnimatedCount(data.participantsCount);
       })
-      .catch((err) => {
+      .catch((_err) => {
         console.warn("Бэкенд недоступен, используем демо-данные для события", id);
         const mockEvent = MOCK_EVENTS_DB[id];
         if (mockEvent) {
