@@ -28,13 +28,11 @@ export const maxBridge = {
   share: async (text: string, link: string) => {
     const fullText = `${text}\n${link}`;
     
-    // 1. Пробуем нативный шеринг MAX
     if (typeof window !== 'undefined' && (window as any).WebApp?.shareContent) {
       (window as any).WebApp.shareContent({ text, link });
       return true;
     }
     
-    // 2. Пробуем нативный шеринг мобильного браузера
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({ title: text, text, url: link });
@@ -44,7 +42,6 @@ export const maxBridge = {
       }
     }
     
-    // 3. Пробуем Clipboard API (работает на HTTPS)
     if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
       try {
         await navigator.clipboard.writeText(fullText);
@@ -54,7 +51,6 @@ export const maxBridge = {
       }
     }
     
-    // 4. Фоллбэк для HTTP (работает ВЕЗДЕ, включая телефон по локальной сети)
     try {
       const textarea = document.createElement('textarea');
       textarea.value = fullText;

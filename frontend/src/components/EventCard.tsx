@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { MapPin, Clock, Users, Share2 } from "lucide-react";
 import { maxBridge } from "../utils/maxBridge";
-import { Toast } from "../components/Toast"; // <-- Добавили импорт Toast
+import { Toast } from "../components/Toast";
 import "./EventCard.css";
 
 interface EventCardProps {
@@ -61,7 +61,6 @@ export const EventCard: React.FC<EventCardProps> = ({
   const fillRate = event.participantsCount / event.maxParticipants;
   const isPopular = event.is_popular === true || fillRate >= 0.8;
 
-  // Состояние для нашего красивого уведомления
   const [toast, setToast] = useState({ visible: false, message: "" });
 
   const getSpotsText = (count: number) => {
@@ -76,10 +75,8 @@ export const EventCard: React.FC<EventCardProps> = ({
     const shareText = `Смотри, крутое событие: ${event.title}!`;
     const shareLink = `${window.location.origin}?event_id=${event.id}`;
 
-    // Копируем в буфер
     const success = await maxBridge.share(shareText, shareLink);
 
-    // Если успешно, показываем наше кастомное уведомление
     if (success) {
       setToast({ visible: true, message: "Ссылка скопирована!" });
     }
@@ -125,7 +122,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             )}
             {isPopular && (
               <div className="badge-fomo badge-popular">
-                Популярно в твоём районе
+                Популярно в твоем районе
               </div>
             )}
             {isMorning && (

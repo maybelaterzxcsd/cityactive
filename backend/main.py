@@ -159,7 +159,7 @@ def join_event(event_id: str, data: dict, db: Session = Depends(get_db)):
     if role == "volunteer" and not event.needs_volunteers:
         raise HTTPException(
             status_code=400,
-            detail="Для этого события волонтёры не требуются",
+            detail="Для этого события волонтеры не требуются",
         )
 
     if is_user_joined(event, user_id):
@@ -187,7 +187,7 @@ def join_event(event_id: str, data: dict, db: Session = Depends(get_db)):
         user.volunteer_hours = (user.volunteer_hours or 0) + hours_earned
 
         badges = load_badges(user)
-        volunteer_badge = "Волонтёр"
+        volunteer_badge = "Волонтер"
         if volunteer_badge not in badges:
             badges.append(volunteer_badge)
             new_badge = volunteer_badge
@@ -271,7 +271,7 @@ def ai_recommend(data: dict, db: Session = Depends(get_db)):
     )
 
     prompt = f'''
-Ты — дружелюбный помощник приложения "ГородАктив".
+Ты - дружелюбный помощник приложения "ГородАктив".
 
 Пользователь спрашивает:
 "{user_query}"
@@ -343,7 +343,7 @@ def ai_recommend(data: dict, db: Session = Depends(get_db)):
             json={
                 "model": GIGACHAT_MODEL,
                 "messages": [
-                    {"role": "system", "content": "Ты — дружелюбный помощник."},
+                    {"role": "system", "content": "Ты - дружелюбный помощник."},
                     {"role": "user", "content": prompt},
                 ],
                 "temperature": 0.7,

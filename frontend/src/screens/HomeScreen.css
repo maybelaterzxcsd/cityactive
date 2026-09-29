@@ -119,12 +119,12 @@
   gap: 24px;
 }
 
-/* ОБЁРТКА */
+/* ОБеРТКА */
 .event-card-wrapper {
   position: relative;
 }
 
-/* БЕЙДЖИК НА ОБЁРТКЕ */
+/* БЕЙДЖИК НА ОБеРТКЕ */
 .event-card-wrapper.recommended-badge::after {
   content: "✨ Выбор ИИ";
   position: absolute;

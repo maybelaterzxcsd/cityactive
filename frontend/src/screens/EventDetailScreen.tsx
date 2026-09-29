@@ -81,7 +81,6 @@ export const EventDetailScreen: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
 
-  // 1. Загружаем событие с бэкенда
   useEffect(() => {
     if (!id) return;
     setLoading(true);
@@ -99,7 +98,6 @@ export const EventDetailScreen: React.FC = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  // 2. Таймер обратного отсчёта
   useEffect(() => {
     const targetTime = new Date();
     targetTime.setHours(targetTime.getHours() + 2);
@@ -117,7 +115,6 @@ export const EventDetailScreen: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // 3. Запись как УЧАСТНИК
   const handleJoin = async () => {
     if (!id || isJoining) return;
 
@@ -155,7 +152,6 @@ export const EventDetailScreen: React.FC = () => {
     }
   };
 
-  // 4. Запись как ВОЛОНТЁР
   const handleVolunteer = async () => {
     if (!id || isJoining) return;
 
@@ -177,7 +173,7 @@ export const EventDetailScreen: React.FC = () => {
 
       setEvent((prev) => prev ? { ...prev, participantsCount: result.new_count || (prev.participantsCount + 1) } : prev);
       
-      setToast({ visible: true, message: "Вы записаны волонтёром!" });
+      setToast({ visible: true, message: "Вы записаны волонтером!" });
       
       setTimeout(() => {
         const hoursMsg = result.hours_earned ? ` (+${result.hours_earned} ч)` : "";
@@ -188,14 +184,13 @@ export const EventDetailScreen: React.FC = () => {
         }
       }, 1500);
     } catch (err: any) {
-      console.error("Ошибка при записи волонтёром:", err);
+      console.error("Ошибка при записи волонтером:", err);
       setToast({ visible: true, message: ` ${err.message}` });
     } finally {
       setIsJoining(false);
     }
   };
 
-  // 5. ШАРИНГ С DEEP LINKING (ИСПРАВЛЕНО: добавлен Toast об успехе)
   const handleShare = async () => {
     if (!event || !id) return;
     

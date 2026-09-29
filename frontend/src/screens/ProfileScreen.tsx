@@ -54,7 +54,6 @@ export const ProfileScreen: React.FC = () => {
         });
         if (Array.isArray(data.events) && data.events.length > 0) {
           setMyEvents(data.events);
-          console.log("🔍 Загружено из /profile:", data.events);
         } else {
           throw new Error("No events in profile, trying my-events");
         }
@@ -73,7 +72,6 @@ export const ProfileScreen: React.FC = () => {
             if (Array.isArray(events) && events.length > 0) {
               setMyEvents(events);
               calculateStatsFromEvents(events);
-              console.log("🔍 Загружено из /my-events:", events);
             } else {
               throw new Error("No data");
             }
@@ -96,7 +94,7 @@ export const ProfileScreen: React.FC = () => {
                 date: "Завтра, 08:00",
                 location: "Центральный парк",
                 role: "volunteer",
-                badge_earned: "Волонтёр",
+                badge_earned: "Волонтер",
                 hours_earned: 2,
               },
               {
@@ -109,7 +107,6 @@ export const ProfileScreen: React.FC = () => {
             ];
             setMyEvents(demoEvents);
             calculateStatsFromEvents(demoEvents);
-            console.log("🔍 Использованы демо-данные:", demoEvents);
             setLoading(false);
           });
       });
@@ -117,7 +114,7 @@ export const ProfileScreen: React.FC = () => {
 
   return (
     <div className="profile-screen">
-      {/* ИСПРАВЛЕНО: profile-content теперь обёртывает всё, включая кнопку */}
+      {/* ИСПРАВЛЕНО: profile-content теперь обертывает все, включая кнопку */}
       <div className="profile-content">
         
         <button className="profile-back-btn" onClick={() => navigate(-1)}>
@@ -199,7 +196,7 @@ export const ProfileScreen: React.FC = () => {
                           : "event-role-badge--participant"
                       }`}
                     >
-                      {isVolunteer ? "🤝 Волонтёр" : "👤 Участник"}
+                      {isVolunteer ? "🤝 Волонтер" : "👤 Участник"}
                     </span>
                   </div>
 

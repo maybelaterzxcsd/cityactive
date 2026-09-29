@@ -61,7 +61,7 @@ def init_db():
             ),
             EventDB(
                 id="3",
-                title="Волонтёрство: Помощь в приюте для животных",
+                title="Волонтерство: Помощь в приюте для животных",
                 description="Помогаем ухаживать за собаками и кошками. Нужны руки и доброе сердце!",
                 date="Сегодня, 14:00",
                 location="Приют 'Друг', ул. Ленина 45",
@@ -71,7 +71,7 @@ def init_db():
                 volunteers_count=0,
                 organizer="VolunteerKZN",
                 category="volunteering",
-                category_ru="Волонтёрство",
+                category_ru="Волонтерство",
                 age_restriction=14,
                 needs_volunteers=True,
                 distance="5.8 км",

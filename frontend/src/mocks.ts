@@ -52,7 +52,7 @@ export const mockEvents: Event[] = [
   },
   {
     id: '3',
-    title: 'Волонтёрство в приюте для животных',
+    title: 'Волонтерство в приюте для животных',
     description: 'Помогаем кормить и выгуливать собак. Нужны ответственные люди!',
     date: 'Суббота, 10:00',
     location: 'Приют "Дружок"',
@@ -61,7 +61,7 @@ export const mockEvents: Event[] = [
     participantsCount: 15,
     organizer: 'AnimalHelp',
     category: 'volunteering',
-    categoryRu: 'Волонтёрство',
+    categoryRu: 'Волонтерство',
     ageRestriction: 14,
     needsVolunteers: true,
     distance: '5.2 км',

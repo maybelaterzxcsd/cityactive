@@ -156,7 +156,7 @@
   border: 1px solid;
 }
 
-/* 🔥 Мало мест — красный */
+/* 🔥 Мало мест - красный */
 .badge-hot {
   background: rgba(239, 68, 68, 0.15);
   border-color: rgba(239, 68, 68, 0.4);
@@ -164,28 +164,28 @@
   animation: pulse-hot 2s infinite;
 }
 
-/* ⚠️ Погода — жёлтый */
+/* ⚠️ Погода - желтый */
 .badge-weather {
   background: rgba(251, 191, 36, 0.15);
   border-color: rgba(251, 191, 36, 0.4);
   color: #fbbf24;
 }
 
-/* ️ Ранняя бронь — фиолетовый */
+/* ️ Ранняя бронь - фиолетовый */
 .badge-early {
   background: rgba(139, 92, 246, 0.15);
   border-color: rgba(139, 92, 246, 0.4);
   color: #a78bfa;
 }
 
-/* 🔥 Популярно — розовый */
+/* 🔥 Популярно - розовый */
 .badge-popular {
   background: rgba(236, 72, 153, 0.15);
   border-color: rgba(236, 72, 153, 0.4);
   color: #f472b6;
 }
 
-/* 🌅 Утро — голубой */
+/* 🌅 Утро - голубой */
 .badge-morning {
   background: rgba(59, 130, 246, 0.15);
   border-color: rgba(59, 130, 246, 0.4);

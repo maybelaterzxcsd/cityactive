@@ -66,7 +66,7 @@ export const MyEventsScreen: React.FC = () => {
       {events.length === 0 ? (
         <div className="empty-state">
           <Calendar size={48} />
-          <p>Вы ещё не записались ни на одно событие</p>
+          <p>Вы еще не записались ни на одно событие</p>
           <button className="btn btn--primary" onClick={() => navigate('/')}>
             Найти событие
           </button>

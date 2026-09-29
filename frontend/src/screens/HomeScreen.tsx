@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Flame, Calendar, Gift, MapPin, User, Wallet } from "lucide-react"; // <-- Добавлен Wallet
+import { Flame, Calendar, Gift, MapPin, User, Wallet } from "lucide-react";
 import { EventCard } from "../components/EventCard";
 import { AIAssistant } from "../components/AIAssistant";
 import "./HomeScreen.css";
 
 const API_URL = "http://127.0.0.1:8000/api";
 
-// <-- Добавлены новые типы фильтров
 type FilterType =
   | "all"
   | "today"
@@ -44,7 +43,6 @@ export const HomeScreen: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [recommendedIds, setRecommendedIds] = useState<string[]>([]);
 
-  // Deep Linking: если в URL есть ?event_id=, сразу переходим на событие
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const eventId = params.get("event_id");

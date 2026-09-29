@@ -9,7 +9,7 @@ export interface Event {
   participantsCount: number;
   organizer: string;
   category: string;
-  categoryRu: string; // НОВОЕ ПОЛЕ
+  categoryRu: string;
   ageRestriction: number;
   needsVolunteers: boolean;
   distance: string;

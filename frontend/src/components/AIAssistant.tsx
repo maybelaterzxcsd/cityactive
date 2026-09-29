@@ -48,19 +48,15 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ events, onRecommend })
 
       const data = await res.json();
 
-      // ИСПРАВЛЕНО: Сначала проверяем статус ответа
       if (!res.ok) {
         setError(data.detail || data.error || "Ошибка сервера при обработке запроса");
-        return; // Прерываем выполнение, чтобы не вызывать .replace() у undefined
+        return;
       }
 
-      // ИСПРАВЛЕНО: Безопасная работа с ответом
       if (data.answer) {
-        // Убираем служебные метки из текста для красивого отображения
         const cleanAnswer = data.answer.replace(/РЕКОМЕНДУЮ_\d+/g, "");
         setResponse(cleanAnswer);
 
-        // Извлекаем ID рекомендованных событий (если бэкенд их вернул в таком формате)
         const recommendedIds = data.answer.match(/РЕКОМЕНДУЮ_(\d+)/g)?.map((id: string) => 
           id.replace("РЕКОМЕНДУЮ_", "")
         ) || [];
@@ -93,7 +89,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ events, onRecommend })
       </div>
 
       <p style={{ margin: "0 0 12px 0", fontSize: "13px", color: "#a0a0b0" }}>
-        Опишите, что вы ищете (например: "бесплатные события на выходные" или "мероприятия для волонтёров")
+        Опишите, что вы ищете (например: "бесплатные события на выходные" или "мероприятия для волонтеров")
       </p>
 
       <div style={{ display: "flex", gap: "8px" }}>

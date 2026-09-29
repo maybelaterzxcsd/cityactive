@@ -5,7 +5,7 @@
 }
 
 :root {
-  /* ТЁМНАЯ ТЕМА (приглушённая, дорогая) */
+  /* ТеМНАЯ ТЕМА (приглушенная, дорогая) */
   --color-bg-primary: #0a0a0b;
   --color-bg-secondary: #111113;
   --color-bg-card: #161618;
@@ -20,7 +20,7 @@
   --color-border: #2c2c2e;
   --color-border-light: #3a3a3c;
   
-  /* Приглушённый индиго вместо яркого фиолетового */
+  /* Приглушенный индиго вместо яркого фиолетового */
   --color-accent: #6366f1;
   --color-accent-light: #818cf8;
   --color-accent-dark: #4f46e5;
@@ -30,10 +30,10 @@
   --color-error: #ef4444;
   --color-info: #3b82f6;
   
-  /* Приглушённые категории */
-  --color-category-volunteering: #059669; /* зелёный вместо бирюзового */
-  --color-category-anime: #db2777; /* приглушённый розовый */
-  --color-category-boardgames: #d97706; /* приглушённый оранжевый */
+  /* Приглушенные категории */
+  --color-category-volunteering: #059669; /* зеленый вместо бирюзового */
+  --color-category-anime: #db2777; /* приглушенный розовый */
+  --color-category-boardgames: #d97706; /* приглушенный оранжевый */
   
   --space-xs: 4px;
   --space-sm: 8px;

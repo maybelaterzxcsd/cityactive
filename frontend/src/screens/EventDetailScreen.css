@@ -168,7 +168,7 @@
   font-weight: var(--font-weight-medium);
 }
 
-/* ОБРАТНЫЙ ОТСЧЁТ */
+/* ОБРАТНЫЙ ОТСЧеТ */
 .countdown {
   display: flex;
   justify-content: space-between;
@@ -479,7 +479,7 @@
   color: white;
 }
 
-/* Блок с полезными ссылками — делаем ненавязчивым */
+/* Блок с полезными ссылками - делаем ненавязчивым */
 .detail-links {
   display: flex;
   flex-direction: column;
