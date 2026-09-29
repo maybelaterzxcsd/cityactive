@@ -9,7 +9,6 @@ def init_db():
     db = SessionLocal()
 
     try:
-        # Полностью очищаем тестовые данные
         if db.query(EventDB).first():
             print("База данных уже инициализирована. Удаляем старые события...")
             db.query(EventDB).delete()
