@@ -1,10 +1,10 @@
 # ГородАктив
 
 **Платформа для поиска городских мероприятий с глубокой интеграцией в экосистему MAX**
-
+```
 [![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 [![MAX Integration](https://img.shields.io/badge/MAX-WebApp-blueviolet)](https://max.ru)
-
+```
 ---
 
 ## 1. Назначение решения
@@ -32,7 +32,7 @@
 ---
 
 ## 3. Состав и архитектура решения
-
+```
 city-active/
 ├── frontend/              # React + TypeScript + Vite
 │   ├── src/
@@ -52,7 +52,7 @@ city-active/
 ├── .env.example           # Шаблон переменных окружения
 ├── README.md
 └── LICENSE
-
+```
 Технологический стек:
 - Frontend: React 18, TypeScript, Vite, MAX UI (@maxhub/max-ui), lucide-react, framer-motion.
 - Backend: Python 3.11+, FastAPI, Uvicorn, Pydantic, SQLite (Dev) / PostgreSQL (Prod).
@@ -67,12 +67,12 @@ city-active/
 docker-compose up --build
 
 Время сборки с нуля составляет менее 2 минут.
-
+```
 После запуска сервисы будут доступны по адресам:
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:8000
 - Swagger-документация: http://localhost:8000/docs
-
+```
 ---
 
 ## 5. Необходимые параметры окружения
@@ -82,7 +82,7 @@ docker-compose up --build
 ---
 
 ## 6. Переменные окружения
-
+```
 Frontend (.env):
 VITE_API_URL=http://localhost:8000/api
 
@@ -91,7 +91,7 @@ DATABASE_URL=sqlite:///./city.db
 CORS_ORIGINS=["http://localhost:5173","http://localhost:5174"]
 HOST=0.0.0.0
 PORT=8000
-
+```
 ---
 
 ## 7. Используемые порты
@@ -102,11 +102,11 @@ PORT=8000
 ---
 
 ## 8. Зависимости
-
+```
 Файлы зависимостей зафиксированы в репозитории:
 - Frontend: frontend/package.json и frontend/package-lock.json (React, Vite, MAX UI).
 - Backend: backend/requirements.txt (fastapi, uvicorn, pydantic).
-
+```
 ---
 
 ## 9. Внешние сервисы и интеграции
@@ -176,7 +176,7 @@ API-эндпоинты:
 ---
 
 ## 15. Порядок остановки и повторного запуска решения
-
+```
 Остановка:
 # Грациозная остановка всех контейнеров
 docker-compose down
@@ -197,7 +197,7 @@ docker-compose logs -f backend
 
 Перезапуск отдельного сервиса:
 docker-compose restart backend
-
+```
 ---
 
 ## Правовая информация
