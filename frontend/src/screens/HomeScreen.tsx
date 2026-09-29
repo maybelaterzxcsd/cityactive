@@ -34,7 +34,6 @@ interface CityEvent {
   image: string | null;
 }
 
-// ДЕМО-ДАННЫЕ для работы без бэкенда
 const MOCK_EVENTS: CityEvent[] = [
   {
     id: "1",
@@ -131,11 +130,113 @@ const MOCK_EVENTS: CityEvent[] = [
     maxParticipants: 60,
     participantsCount: 45,
     organizer: "TechHub",
-    category: "hackathon",
+    category: "tech",
     categoryRu: "IT и Хакатоны",
     ageRestriction: 16,
     needsVolunteers: true,
     distance: "5.0 км",
+    image: null,
+  },
+  {
+    id: "7",
+    title: "Йога на открытом воздухе",
+    description: "Утренняя практика для всех уровней. Коврики предоставляем.",
+    date: "Завтра, 08:00",
+    location: "Сквер у Театра Драмы",
+    price: 400,
+    maxParticipants: 25,
+    participantsCount: 12,
+    organizer: "YogaFlow",
+    category: "sport",
+    categoryRu: "Спорт",
+    ageRestriction: 14,
+    needsVolunteers: false,
+    distance: "1.8 км",
+    image: null,
+  },
+  {
+    id: "8",
+    title: "Квиз 'Что? Где? Когда?'",
+    description: "Интеллектуальная битва команд. 6 раундов, 36 вопросов.",
+    date: "Сегодня, 20:00",
+    location: "Бар 'Мозгобойня'",
+    price: 500,
+    maxParticipants: 40,
+    participantsCount: 32,
+    organizer: "QuizMaster",
+    category: "boardgames",
+    categoryRu: "Настольные игры",
+    ageRestriction: 16,
+    needsVolunteers: false,
+    distance: "2.2 км",
+    image: null,
+  },
+  {
+    id: "9",
+    title: "Фестиваль уличной еды",
+    description: "15 фудтраков, живая музыка, мастер-классы от шеф-поваров.",
+    date: "16 октября, 12:00",
+    location: "Набережная, площадь у Моста",
+    price: 0,
+    maxParticipants: 500,
+    participantsCount: 234,
+    organizer: "StreetFood Fest",
+    category: "food",
+    categoryRu: "Еда и напитки",
+    ageRestriction: 0,
+    needsVolunteers: true,
+    distance: "3.5 км",
+    image: null,
+  },
+  {
+    id: "10",
+    title: "Концерт инди-группы 'Лунный свет'",
+    description: "Акустический концерт в уютной атмосфере. Мерч, автограф-сессия.",
+    date: "17 октября, 19:00",
+    location: "Клуб 'Подвал'",
+    price: 700,
+    maxParticipants: 80,
+    participantsCount: 67,
+    organizer: "LiveMusic",
+    category: "music",
+    categoryRu: "Музыка",
+    ageRestriction: 18,
+    needsVolunteers: false,
+    distance: "4.0 км",
+    image: null,
+  },
+  {
+    id: "11",
+    title: "Экскурсия по историческому центру",
+    description: "Пешеходная прогулка с гидом. Узнайте тайны старых зданий.",
+    date: "Завтра, 11:00",
+    location: "Площадь Революции, у фонтана",
+    price: 350,
+    maxParticipants: 20,
+    participantsCount: 15,
+    organizer: "ГидГород",
+    category: "art",
+    categoryRu: "Творчество",
+    ageRestriction: 12,
+    needsVolunteers: false,
+    distance: "1.5 км",
+    image: null,
+  },
+  {
+    id: "12",
+    title: "Турнир по настольному теннису",
+    description: "Одиночный разряд, олимпийская система. Призы от спонсоров.",
+    date: "18 октября, 10:00",
+    location: "Спорткомплекс 'Олимп'",
+    price: 200,
+    maxParticipants: 32,
+    participantsCount: 28,
+    organizer: "SportCity",
+    category: "sport",
+    categoryRu: "Спорт",
+    ageRestriction: 14,
+    needsVolunteers: false,
+    distance: "6.2 км",
     image: null,
   }
 ];
@@ -193,7 +294,7 @@ export const HomeScreen: React.FC = () => {
             return event.price <= 1000;
           case "nearby":
             const distance = parseFloat(event.distance.replace(" км", ""));
-            return distance <= 3;
+            return !isNaN(distance) && distance <= 3;
           default:
             return true;
         }
@@ -221,7 +322,6 @@ export const HomeScreen: React.FC = () => {
       </div>
     );
   }
-
 
   return (
     <div className="home-screen">

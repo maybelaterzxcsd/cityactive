@@ -66,8 +66,14 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ events, onRecommend })
       filtered = filtered.filter(e => e.category === "sport");
       message += "Вот спортивные активности. ";
     }
+    
+    // ИСПРАВЛЕНО: безопасная проверка distance, чтобы не было краша на локале
     if (lowerQ.includes("рядом") || lowerQ.includes("близко")) {
-      filtered = filtered.filter(e => parseFloat(e.distance.replace(" км", "")) <= 3);
+      filtered = filtered.filter(e => {
+        if (!e.distance) return false;
+        const dist = parseFloat(e.distance.replace(" км", ""));
+        return !isNaN(dist) && dist <= 3;
+      });
       message += "Отобрал события в шаговой доступности. ";
     }
 
