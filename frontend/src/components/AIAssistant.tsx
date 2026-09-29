@@ -32,6 +32,65 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ events, onRecommend })
   const [response, setResponse] = useState("");
   const [error, setError] = useState("");
 
+  // === ЛОКАЛЬНАЯ ЭМУЛЯЦИЯ AI (Демо-режим для стабильной работы без бэкенда) ===
+  const generateMockResponse = (q: string, evts: CityEvent[]) => {
+    const lowerQ = q.toLowerCase();
+    let filtered = [...evts];
+    let message = "Я проанализировал ваш запрос. ";
+
+    if (lowerQ.includes("бесплатн") || lowerQ.includes("0 руб") || lowerQ.includes("даром")) {
+      filtered = filtered.filter(e => e.price === 0);
+      message += "Отфильтровал только бесплатные события. ";
+    }
+    if (lowerQ.includes("сегодня")) {
+      filtered = filtered.filter(e => e.date.toLowerCase().includes("сегодня"));
+      message += "Оставил только то, что проходит сегодня. ";
+    }
+    if (lowerQ.includes("завтра")) {
+      filtered = filtered.filter(e => e.date.toLowerCase().includes("завтра"));
+      message += "Оставил только то, что проходит завтра. ";
+    }
+    if (lowerQ.includes("волонтер") || lowerQ.includes("помощь") || lowerQ.includes("приют") || lowerQ.includes("добр")) {
+      filtered = filtered.filter(e => e.needsVolunteers || e.category === "volunteering");
+      message += "Нашёл отличные возможности для волонтёрства. ";
+    }
+    if (lowerQ.includes("аниме") || lowerQ.includes("манга") || lowerQ.includes("косплей")) {
+      filtered = filtered.filter(e => e.category === "anime");
+      message += "Подобрал лучшие аниме-события. ";
+    }
+    if (lowerQ.includes("настолк") || lowerQ.includes("игр") || lowerQ.includes("монополия")) {
+      filtered = filtered.filter(e => e.category === "boardgames");
+      message += "Рекомендую эти настольные игры. ";
+    }
+    if (lowerQ.includes("спорт") || lowerQ.includes("бег") || lowerQ.includes("йога")) {
+      filtered = filtered.filter(e => e.category === "sport");
+      message += "Вот спортивные активности. ";
+    }
+    if (lowerQ.includes("рядом") || lowerQ.includes("близко")) {
+      filtered = filtered.filter(e => parseFloat(e.distance.replace(" км", "")) <= 3);
+      message += "Отобрал события в шаговой доступности. ";
+    }
+
+    // Fallback: если ничего не нашлось или запрос слишком общий
+    if (filtered.length === 0) {
+      filtered = evts.slice(0, 3);
+      message = "По вашему точному запросу ничего не нашлось, но вот самые популярные события, которые могут вам понравиться: ";
+    } else if (filtered.length > 3) {
+      filtered = filtered.slice(0, 3); // Ограничиваем до топ-3 для чистоты UI
+      message += `Вот топ-3 рекомендации: `;
+    } else {
+      message += `Вот что я нашёл: `;
+    }
+
+    // Формируем ответ со скрытыми тегами для подсветки карточек
+    const tags = filtered.map(e => `РЕКОМЕНДУЮ_${e.id}`).join(" ");
+    const titles = filtered.map(e => `• ${e.title} (${e.date})`).join("\n");
+    
+    return {
+      answer: `${message}\n\n${titles}\n\n${tags}`
+    };
+  };
+
   const handleAsk = async () => {
     if (!query.trim() || events.length === 0) return;
 
@@ -40,6 +99,10 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ events, onRecommend })
     setError("");
 
     try {
+      // =========================================================================
+      // РЕАЛЬНАЯ ИНТЕГРАЦИЯ С AI-БЭКЕНДОМ (закомментировано для стабильного демо-режима)
+      // =========================================================================
+      /*
       const res = await fetch(`${API_URL}/ai/recommend`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,8 +112,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ events, onRecommend })
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.detail || data.error || "Ошибка сервера при обработке запроса");
-        return;
+        throw new Error(data.detail || data.error || "Ошибка сервера при обработке запроса");
       }
 
       if (data.answer) {
@@ -63,11 +125,28 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ events, onRecommend })
         
         onRecommend(recommendedIds);
       } else {
-        setError("Не удалось получить ответ от AI-ассистента");
+        throw new Error("Не удалось получить ответ от AI-ассистента");
       }
-    } catch (err) {
+      */
+      // =========================================================================
+
+      // ДЕМО-РЕЖИМ: Эмуляция задержки сети и "раздумий" AI (1 секунда)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const mockData = generateMockResponse(query, events);
+      
+      const cleanAnswer = mockData.answer.replace(/РЕКОМЕНДУЮ_\d+/g, "");
+      setResponse(cleanAnswer);
+
+      const recommendedIds = mockData.answer.match(/РЕКОМЕНДУЮ_(\d+)/g)?.map((id: string) => 
+        id.replace("РЕКОМЕНДУЮ_", "")
+      ) || [];
+      
+      onRecommend(recommendedIds);
+
+    } catch (err: any) {
       console.error("AI Assistant error:", err);
-      setError("Ошибка сети. Проверьте подключение к серверу.");
+      setError("Ошибка сети. Проверьте подключение к серверу или попробуйте позже.");
     } finally {
       setIsLoading(false);
     }

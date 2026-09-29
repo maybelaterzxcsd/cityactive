@@ -34,12 +34,117 @@ interface CityEvent {
   image: string | null;
 }
 
+// ДЕМО-ДАННЫЕ для работы без бэкенда
+const MOCK_EVENTS: CityEvent[] = [
+  {
+    id: "1",
+    title: "Аниме-сходка: Обсуждение нового сезона",
+    description: "Собираемся обсудить последние серии и поиграть в настолки по мотивам.",
+    date: "Сегодня, 18:00",
+    location: "Парк Горького, у фонтана",
+    price: 0,
+    maxParticipants: 30,
+    participantsCount: 13,
+    organizer: "AnimeClub",
+    category: "anime",
+    categoryRu: "Аниме и манга",
+    ageRestriction: 16,
+    needsVolunteers: false,
+    distance: "1.2 км",
+    image: null,
+  },
+  {
+    id: "2",
+    title: "Вечер настольных игр",
+    description: "Коллекция из 50+ игр. Чай, печеньки и отличная компания.",
+    date: "Завтра, 19:00",
+    location: "Антикафе 'Время'",
+    price: 300,
+    maxParticipants: 15,
+    participantsCount: 8,
+    organizer: "Настолки РФ",
+    category: "boardgames",
+    categoryRu: "Настольные игры",
+    ageRestriction: 12,
+    needsVolunteers: false,
+    distance: "2.5 км",
+    image: null,
+  },
+  {
+    id: "3",
+    title: "Утренняя пробежка в парке",
+    description: "Легкий бег для всех уровней подготовки. Разминка и заминка включены.",
+    date: "Сегодня, 07:00",
+    location: "Парк Победы, главный вход",
+    price: 0,
+    maxParticipants: 20,
+    participantsCount: 5,
+    organizer: "RunCity",
+    category: "sport",
+    categoryRu: "Спорт",
+    ageRestriction: 12,
+    needsVolunteers: false,
+    distance: "0.8 км",
+    image: null,
+  },
+  {
+    id: "4",
+    title: "Волонтёрство: Помощь в приюте для животных",
+    description: "Нужна помощь с выгулом собак и уборкой вольеров. Инструктаж на месте.",
+    date: "Сегодня, 14:00",
+    location: "Приют 'Друг', ул. Ленина 45",
+    price: 0,
+    maxParticipants: 10,
+    participantsCount: 4,
+    organizer: "Друг",
+    category: "volunteering",
+    categoryRu: "Волонтёрство",
+    ageRestriction: 14,
+    needsVolunteers: true,
+    distance: "4.5 км",
+    image: null,
+  },
+  {
+    id: "5",
+    title: "Мастер-класс по живописи",
+    description: "Рисуем акрилом на холсте. Все материалы предоставляются.",
+    date: "Завтра, 15:00",
+    location: "Арт-пространство 'Холст'",
+    price: 800,
+    maxParticipants: 10,
+    participantsCount: 8,
+    organizer: "ArtSpace",
+    category: "art",
+    categoryRu: "Творчество",
+    ageRestriction: 16,
+    needsVolunteers: false,
+    distance: "3.1 км",
+    image: null,
+  },
+  {
+    id: "6",
+    title: "Хакатон по веб-разработке",
+    description: "48 часов кодинга, пиццы и нетворкинга. Призовой фонд 100к.",
+    date: "15 октября, 10:00",
+    location: "Технопарк, зал 301",
+    price: 0,
+    maxParticipants: 60,
+    participantsCount: 45,
+    organizer: "TechHub",
+    category: "hackathon",
+    categoryRu: "IT и Хакатоны",
+    ageRestriction: 16,
+    needsVolunteers: true,
+    distance: "5.0 км",
+    image: null,
+  }
+];
+
 export const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [events, setEvents] = useState<CityEvent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [recommendedIds, setRecommendedIds] = useState<string[]>([]);
 
@@ -60,13 +165,10 @@ export const HomeScreen: React.FC = () => {
       })
       .then((data: CityEvent[]) => {
         setEvents(data);
-        setError(null);
       })
       .catch((err) => {
-        console.error("Error fetching events:", err);
-        setError(
-          "Не удалось загрузить события. Проверьте подключение к серверу.",
-        );
+        console.warn("Бэкенд недоступен, используем демо-данные (mocks).", err);
+        setEvents(MOCK_EVENTS);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -120,18 +222,6 @@ export const HomeScreen: React.FC = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="home-screen">
-        <div className="error-container">
-          <p>{error}</p>
-          <button onClick={() => window.location.reload()}>
-            Попробовать снова
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="home-screen">
@@ -170,8 +260,6 @@ export const HomeScreen: React.FC = () => {
         >
           <Gift size={16} /> Бесплатно
         </button>
-
-        {/* НОВЫЕ ЧИПЫ ФИЛЬТРОВ ПО ЦЕНЕ */}
         <button
           className={`chip ${activeFilter === "under500" ? "chip--active" : ""}`}
           onClick={() => setActiveFilter("under500")}
@@ -184,7 +272,6 @@ export const HomeScreen: React.FC = () => {
         >
           <Wallet size={16} /> До 1000₽
         </button>
-
         <button
           className={`chip ${activeFilter === "nearby" ? "chip--active" : ""}`}
           onClick={() => setActiveFilter("nearby")}
